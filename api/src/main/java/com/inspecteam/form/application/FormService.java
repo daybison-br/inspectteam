@@ -1,5 +1,6 @@
 package com.inspecteam.form.application;
 
+import com.inspecteam.audit.application.AuditService;
 import tools.jackson.databind.JsonNode;
 import com.inspecteam.form.domain.FormDefinitionValidator;
 import com.inspecteam.form.domain.FormSummary;
@@ -19,12 +20,14 @@ public class FormService {
     private final FormJdbcRepository forms;
     private final FormDefinitionValidator validator;
     private final TenantAuthorizationService authorization;
+    private final AuditService audit;
 
     public FormService(FormJdbcRepository forms, FormDefinitionValidator validator,
-            TenantAuthorizationService authorization) {
+            TenantAuthorizationService authorization, AuditService audit) {
         this.forms = forms;
         this.validator = validator;
         this.authorization = authorization;
+        this.audit = audit;
     }
 
     @Transactional
@@ -35,7 +38,10 @@ public class FormService {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Administrador global precisa de membership para criar formulários");
         }
         validator.validate(definition);
-        return forms.create(tenantId, membership.id(), name.trim(), description, definition);
+        UUID formId = forms.create(tenantId, membership.id(), name.trim(), description, definition);
+        audit.record(tenantId, userId, membership.id(), "FORM_CREATED", "FORM", formId,
+                java.util.Map.of("name", name.trim()));
+        return formId;
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +58,7 @@ public class FormService {
         var draft = forms.findDraft(tenantId, formId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Rascunho do formulário não encontrado"));
         forms.updateDraft(tenantId, draft.id(), definition);
+        audit.record(tenantId, userId, null, "FORM_DRAFT_UPDATED", "FORM", formId, java.util.Map.of());
     }
 
     @Transactional
@@ -64,5 +71,7 @@ public class FormService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Rascunho do formulário não encontrado"));
         validator.validate(draft.definition());
         forms.publish(tenantId, formId, draft, membership.id());
+        audit.record(tenantId, userId, membership.id(), "FORM_PUBLISHED", "FORM", formId,
+                java.util.Map.of("version", draft.version()));
     }
 }

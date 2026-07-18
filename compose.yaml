@@ -8,9 +8,9 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: CMD-SHELL pg_isready -U ${POSTGRES_USER:-inspecteam_owner} -d ${POSTGRES_DB:-inspecteam}
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-inspecteam_owner} -d ${POSTGRES_DB:-inspecteam}"]
       interval: 5s
       timeout: 5s
       retries: 10

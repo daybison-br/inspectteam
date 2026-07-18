@@ -1,0 +1,75 @@
+# Segredos e variáveis locais
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+secrets.*
+credentials.*
+**/secrets.*
+**/credentials.*
+
+# Chaves, certificados privados e keystores
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+
+# Configurações locais e de produção com possíveis segredos
+application-local.yml
+application-local.yaml
+application-local.properties
+application-prod.yml
+application-prod.yaml
+application-prod.properties
+application-production.yml
+application-production.yaml
+application-production.properties
+application-secrets.yml
+application-secrets.yaml
+application-secrets.properties
+
+# Backups e exportações de dados
+backups/
+*.dump
+*.backup
+*.sql.gz
+*.tar.gz
+
+# Logs e arquivos temporários
+logs/
+*.log
+*.tmp
+*.temp
+*.pid
+
+# Backend Java
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Frontend Node
+**/node_modules/
+**/.next/
+**/.vinext/
+**/dist/
+**/out/
+**/coverage/
+**/.wrangler/
+**/outputs/
+**/work/
+**/next-env.d.ts
+
+# IDEs e sistema operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini

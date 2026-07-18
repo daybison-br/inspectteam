@@ -77,6 +77,23 @@ public class TenantJdbcRepository {
                 .single();
     }
 
+    public boolean hasFormPermission(UUID tenantId, UUID membershipId, UUID formId, String permission) {
+        return jdbc.sql("""
+                SELECT EXISTS (
+                    SELECT 1 FROM form_grants fg
+                     WHERE fg.tenant_id = :tenantId AND fg.form_id = :formId
+                       AND fg.permission_code = :permission AND fg.membership_id = :membershipId
+                    UNION ALL
+                    SELECT 1 FROM form_grants fg
+                      JOIN membership_roles mr ON mr.tenant_id = fg.tenant_id AND mr.role_id = fg.role_id
+                     WHERE fg.tenant_id = :tenantId AND fg.form_id = :formId
+                       AND fg.permission_code = :permission AND mr.membership_id = :membershipId
+                )
+                """).param("tenantId", tenantId).param("membershipId", membershipId)
+                .param("formId", formId).param("permission", permission)
+                .query(Boolean.class).single();
+    }
+
     public record Membership(UUID id, UUID tenantId, UUID userId, String type) {
         public boolean owner() {
             return "OWNER".equals(type);

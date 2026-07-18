@@ -2,6 +2,8 @@ package com.inspecteam.auth.infrastructure;
 
 import com.inspecteam.auth.domain.UserAccount;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -77,7 +79,7 @@ public class AuthJdbcRepository {
                 """)
                 .param("userId", userId)
                 .param("tokenHash", tokenHash)
-                .param("expiresAt", expiresAt)
+                .param("expiresAt", OffsetDateTime.ofInstant(expiresAt, ZoneOffset.UTC))
                 .param("deviceName", deviceName)
                 .update();
     }

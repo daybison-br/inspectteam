@@ -1,10 +1,12 @@
 spring:
   application:
     name: inspecteam-api
+  config:
+    import: optional:file:../.env[.properties]
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/inspecteam}
-    username: ${DATABASE_USERNAME:inspecteam_owner}
-    password: ${DATABASE_PASSWORD:inspecteam_local_password}
+    username: ${DATABASE_USERNAME:${POSTGRES_USER:inspecteam_owner}}
+    password: ${DATABASE_PASSWORD:${POSTGRES_PASSWORD:inspecteam_local_password}}
   jpa:
     open-in-view: false
     hibernate:
@@ -19,6 +21,9 @@ spring:
     validate-migration-naming: true
   jackson:
     default-property-inclusion: non_null
+  mvc:
+    problemdetails:
+      enabled: true
 
 server:
   shutdown: graceful
@@ -43,5 +48,5 @@ inspecteam:
   storage:
     endpoint: ${STORAGE_ENDPOINT:http://localhost:9000}
     bucket: ${STORAGE_BUCKET:inspecteam}
-    access-key: ${STORAGE_ACCESS_KEY:inspecteam}
-    secret-key: ${STORAGE_SECRET_KEY:inspecteam_local_password}
+    access-key: ${STORAGE_ACCESS_KEY:${MINIO_ROOT_USER:inspecteam}}
+    secret-key: ${STORAGE_SECRET_KEY:${MINIO_ROOT_PASSWORD:inspecteam_local_password}}

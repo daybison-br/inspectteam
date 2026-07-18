@@ -1,191 +1,229 @@
-# Análise técnica do projeto InspecTeam
+# Análise técnica e estado de implementação do InspecTeam
 
-## 1. Objetivo deste documento
+## Objetivo
 
-Este documento registra o estado observado do projeto em 17 de julho de 2026. Ele foi produzido a partir dos arquivos disponíveis no diretório atual e serve como contexto técnico para pessoas e agentes que venham a trabalhar no repositório.
+Este documento registra o estado observado em 18 de julho de 2026 e é o ponto de retomada do projeto. As funcionalidades descritas como implementadas existem nos arquivos atuais. A seção de pendências contém recomendações, não funcionalidades prontas.
 
-As seções de estado atual descrevem somente o que já existe. Ideias de evolução aparecem separadamente como recomendações e não devem ser interpretadas como funcionalidades implementadas.
+## Visão geral
 
-## 2. Visão geral
+O InspecTeam é um SaaS multi-tenant para criação, distribuição e preenchimento de formulários operacionais. O caso de uso de referência é um proprietário de empresa de guincho criando checklists na web e liberando-os para funcionários preencherem em dispositivos móveis, inclusive offline.
 
-O diretório contém um único módulo chamado `api`, que corresponde a uma aplicação Java com Spring Boot e Maven. O artefato Maven se chama `InspecTeam` e está na versão de desenvolvimento `0.0.1-SNAPSHOT`.
-
-O projeto está em estágio inicial: há a inicialização padrão de uma aplicação Spring Boot e um teste que confirma o carregamento do contexto. Ainda não existe uma API HTTP implementada.
-
-## 3. Stack e versões confirmadas
-
-| Componente | Versão ou configuração | Fonte |
-| --- | --- | --- |
-| Java | 21 | Propriedade `java.version` do `pom.xml` e ambiente usado na validação |
-| Spring Boot | 4.1.0 | Parent `spring-boot-starter-parent` do `pom.xml` |
-| Maven Wrapper | Maven 3.9.16, wrapper 3.3.4 | `.mvn/wrapper/maven-wrapper.properties` |
-| Empacotamento | JAR | Padrão Maven utilizado pelo projeto e plugin do Spring Boot |
-| Testes | JUnit 5 por meio do Spring Boot Test | Dependência `spring-boot-starter-test` e teste existente |
-
-Dependências declaradas diretamente:
-
-- `spring-boot-starter`, para o núcleo da aplicação Spring Boot;
-- `spring-boot-starter-test`, disponível somente no escopo de testes.
-
-Não está declarado um starter web, como `spring-boot-starter-web` ou `spring-boot-starter-webflux`. Portanto, no estado atual, o projeto não expõe servidor ou endpoints HTTP.
-
-## 4. Estrutura observada
+A raiz contém:
 
 ```text
 inspecTeam/
-├── AGENTS/
-│   └── PROJECT_ANALYSIS.md
-└── api/
-    ├── .mvn/wrapper/maven-wrapper.properties
-    ├── src/
-    │   ├── main/
-    │   │   ├── java/com/api/InspecTeam/InspecTeamApplication.java
-    │   │   └── resources/application.properties
-    │   └── test/java/com/api/InspecTeam/InspecTeamApplicationTests.java
-    ├── target/
-    ├── .gitattributes
-    ├── .gitignore
-    ├── HELP.md
-    ├── mvnw
-    ├── mvnw.cmd
-    └── pom.xml
+├── AGENTS/PROJECT_ANALYSIS.md
+├── api/                 # API Spring Boot
+├── web/                 # protótipo web React/Vinext
+├── compose.yaml         # PostgreSQL e MinIO locais
+└── .env.example         # variáveis de ambiente de exemplo
 ```
 
-### Arquivos principais
+Existe um repositório Git inicializado na raiz. Artefatos gerados, como `api/target`, `web/node_modules`, `web/dist` e `web/.vinext`, não são código-fonte e não devem ser versionados.
 
-- `InspecTeamApplication.java`: ponto de entrada da aplicação. Possui `@SpringBootApplication` e chama `SpringApplication.run(...)`.
-- `application.properties`: contém apenas `spring.application.name=InspecTeam`.
-- `InspecTeamApplicationTests.java`: contém somente o teste `contextLoads()`, anotado com `@SpringBootTest`.
-- `pom.xml`: define coordenadas, Java 21, dependências básicas e o plugin Maven do Spring Boot.
-- `HELP.md`: documentação padrão gerada pelo Spring Initializr, com referências para Maven e Spring Boot.
-- `mvnw` e `mvnw.cmd`: scripts para executar a versão configurada do Maven em Unix e Windows, respectivamente.
-- `target/`: saída gerada por compilação e testes. Contém classes compiladas e recursos copiados, não código-fonte.
+O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keystores, configurações com segredos, backups, logs, dependências e artefatos de build. O arquivo `.env.example` permanece versionável por conter apenas placeholders.
 
-## 5. Estado funcional atual
+## Stack confirmada
 
-A aplicação consegue criar e inicializar o contexto do Spring. Fora essa infraestrutura inicial, não foram encontrados:
+### Backend
 
-- controllers ou endpoints;
-- modelos ou entidades de domínio;
-- serviços ou casos de uso;
-- repositories ou persistência em banco de dados;
-- migrações de banco;
-- autenticação ou autorização;
-- validação de dados de entrada;
-- tratamento padronizado de erros;
-- integrações externas;
-- documentação de API, como OpenAPI/Swagger;
-- configurações de implantação, contêiner ou CI/CD.
+- Java 21;
+- Spring Boot 4.1.0;
+- Maven Wrapper 3.9.16;
+- API HTTP com Spring MVC;
+- Spring Security com JWT HMAC;
+- Spring JDBC e PostgreSQL 18;
+- Flyway com nove migrações;
+- MinIO para armazenamento de fotos e assinaturas;
+- Testcontainers com PostgreSQL real nos testes;
+- empacotamento JAR.
 
-Esses itens não são necessariamente problemas neste estágio; representam funcionalidades ainda não presentes na estrutura analisada.
+### Web
 
-## 6. Configuração e metadados
+- React 19.2.6;
+- Next 16.2.6 executado por Vinext 0.0.50 e Vite 8;
+- TypeScript 5.9.3;
+- Node.js 22.13 ou superior.
 
-A única propriedade da aplicação é:
+O aplicativo React atual é um protótipo interativo do construtor de formulários. Ele ainda não consome a API.
 
-```properties
-spring.application.name=InspecTeam
+## Arquitetura do backend
+
+O pacote raiz é `com.inspecteam`. A organização é por funcionalidade, mantendo API, aplicação, domínio e infraestrutura próximos:
+
+```text
+com.inspecteam/
+├── auth/          # registro, login, refresh e logout
+├── tenant/        # seleção e consulta de tenants
+├── user/          # funcionários e memberships
+├── permission/    # papéis, permissões e grants por formulário
+├── form/          # drafts, validação e versões publicadas
+├── submission/    # respostas, revisão otimista e conclusão
+├── sync/          # dispositivos, pull, push e idempotência
+├── file/          # sessões de upload no MinIO
+├── audit/         # trilha de auditoria
+└── shared/        # segurança e tratamento de erros
 ```
 
-Não há perfis de ambiente, configuração de porta, conexão com banco, variáveis externas ou outras propriedades específicas da aplicação.
+O isolamento multi-tenant ocorre em duas camadas:
 
-No `pom.xml`, os campos `name`, `description` e `url` estão vazios. Também existem blocos vazios para licença, desenvolvedores e SCM. Conforme explicado no `HELP.md`, parte desses blocos vazios foi gerada para impedir a herança indesejada de metadados do parent do Spring Boot.
+1. serviços validam a membership ativa e as permissões do ator;
+2. PostgreSQL aplica Row-Level Security nas tabelas pertencentes ao tenant.
 
-## 7. Testes e validação observada
+O tenant ativo é definido localmente na transação com `set_config`. As tabelas globais de identidade e catálogo de tenants permanecem fora de RLS para permitir autenticação e seleção do tenant.
 
-O comando abaixo foi executado no diretório `api`:
+## Funcionalidades implementadas
+
+### Identidade e tenants
+
+- cadastro transacional de tenant e proprietário;
+- login com senha BCrypt;
+- access token de curta duração;
+- refresh token rotativo armazenado como hash;
+- logout por revogação do refresh token;
+- listagem dos tenants acessíveis ao usuário.
+
+### Usuários e autorização
+
+- cadastro e suspensão de funcionários do tenant;
+- papéis customizados;
+- catálogo de permissões;
+- associação de permissões a papéis;
+- associação de papéis a memberships;
+- grants detalhados por formulário para membership ou papel;
+- política padrão de negar o acesso quando não houver permissão.
+
+### Formulários
+
+- criação e edição de rascunho;
+- validação da definição JSON;
+- publicação de versão imutável;
+- criação automática do próximo rascunho;
+- campos suportados: texto, texto longo, número, data, hora, seleção, multisseleção, checkbox, foto, assinatura, título e instruções.
+
+### Respostas, arquivos e offline
+
+- criação idempotente de respostas por UUID do cliente;
+- salvamento de rascunho com controle otimista de revisão;
+- conclusão imutável da resposta;
+- upload direto por URL pré-assinada do MinIO, limitado a 20 MB;
+- registro de dispositivos;
+- sincronização pull de formulários publicados e tombstones;
+- sincronização push idempotente com `mutationId`;
+- mutações `CREATE`, `UPDATE` e `COMPLETE`;
+- auditoria das principais operações administrativas e operacionais.
+
+## Banco de dados
+
+As migrações em `api/src/main/resources/db/migration` são:
+
+1. usuários e refresh tokens;
+2. tenants e memberships;
+3. papéis, permissões e grants;
+4. formulários e versões;
+5. respostas e revisões;
+6. metadados de arquivos;
+7. dispositivos e controle de sincronização;
+8. eventos de auditoria;
+9. políticas de Row-Level Security.
+
+O Hibernate está configurado apenas para validar o esquema. A evolução estrutural do banco deve ocorrer exclusivamente por novas migrações Flyway; migrações existentes não devem ser reescritas após serem compartilhadas.
+
+## Contratos HTTP existentes
+
+Todos os contratos usam o prefixo `/api/v1`.
+
+- `/auth`: cadastrar tenant, login, refresh e logout;
+- `/tenants`: listar tenants do usuário;
+- `/tenants/{tenantId}/users`: listar, cadastrar e suspender usuários;
+- `/tenants/{tenantId}/permissions`: papéis, permissões e grants;
+- `/tenants/{tenantId}/forms`: criar, listar, editar draft e publicar;
+- `/tenants/{tenantId}/submissions`: criar, editar, concluir e listar respostas;
+- `/tenants/{tenantId}/sync`: registrar dispositivo, pull e push;
+- `/tenants/{tenantId}/files`: iniciar e concluir upload;
+- `/tenants/{tenantId}/audit`: consultar auditoria.
+
+Erros HTTP são representados por Problem Details. Rotas protegidas esperam `Authorization: Bearer <token>`.
+
+## Configuração local
+
+`compose.yaml` fornece PostgreSQL 18 e MinIO. `.env.example` contém somente valores de desenvolvimento e deve ser copiado para um `.env` local com segredos próprios. A API importa opcionalmente o `.env` da raiz e usa `POSTGRES_*` e `MINIO_ROOT_*` como fallback local; em produção, `DATABASE_*` e `STORAGE_*` têm prioridade.
+
+### Iniciar infraestrutura
 
 ```powershell
-.\mvnw.cmd test
+docker compose up -d
 ```
 
-Resultado observado:
-
-- 1 teste executado;
-- 0 falhas;
-- 0 erros;
-- 0 testes ignorados;
-- build concluído com `BUILD SUCCESS`.
-
-O teste atual valida somente que o contexto Spring pode ser carregado. Ele não cobre regras de negócio ou contratos HTTP, pois esses componentes ainda não existem.
-
-Durante o teste, a JVM exibiu avisos relacionados ao carregamento dinâmico do agente usado pelo Mockito/Byte Buddy. Eles não fizeram o build falhar, mas podem exigir ajuste futuro à medida que novas versões do Java restringirem esse mecanismo.
-
-## 8. Convenções e observações do diretório
-
-- O pacote Java é `com.api.InspecTeam`. Por convenção, nomes de pacotes Java costumam usar apenas letras minúsculas; uma possível forma futura seria `com.api.inspecteam`.
-- O diretório `target/` está listado no `.gitignore` e deve ser tratado como saída descartável de build.
-- O arquivo `HELP.md` também está listado no `.gitignore`, embora exista no diretório atual.
-- O `.gitignore` inclui padrões para STS, IntelliJ IDEA, NetBeans e Visual Studio Code.
-- O `.gitattributes` força finais de linha LF em `mvnw` e CRLF em arquivos `*.cmd`.
-- Não foi encontrado um repositório Git inicializado na raiz `inspecTeam` nem em seus diretórios pais acessíveis pelo comando executado; `git status` retornou que o local não é um repositório Git.
-- A presença de `target/` e de classes compiladas indica que o módulo já foi compilado/testado localmente.
-
-## 9. Comandos úteis
-
-Execute os comandos a partir do diretório `api`.
-
-### Windows (PowerShell ou Prompt de Comando)
+### Backend no Windows
 
 ```powershell
-# Exibir a versão do Maven e do Java usados pelo wrapper
-.\mvnw.cmd -version
-
-# Executar os testes
+cd api
 .\mvnw.cmd test
-
-# Limpar e gerar o pacote JAR
 .\mvnw.cmd clean package
-
-# Iniciar a aplicação pelo plugin do Spring Boot
 .\mvnw.cmd spring-boot:run
-
-# Executar o JAR após o empacotamento
-java -jar .\target\InspecTeam-0.0.1-SNAPSHOT.jar
 ```
 
-### Linux, macOS ou outro ambiente Unix
+### Backend em Unix
 
 ```bash
-# Exibir a versão do Maven e do Java usados pelo wrapper
-./mvnw -version
-
-# Executar os testes
+cd api
 ./mvnw test
-
-# Limpar e gerar o pacote JAR
 ./mvnw clean package
-
-# Iniciar a aplicação pelo plugin do Spring Boot
 ./mvnw spring-boot:run
-
-# Executar o JAR após o empacotamento
-java -jar ./target/InspecTeam-0.0.1-SNAPSHOT.jar
 ```
 
-Como não há starter web ou outro processo persistente implementado, a aplicação atual pode iniciar o contexto e encerrar em seguida.
+### Frontend
 
-## 10. Riscos e pontos de atenção
+```powershell
+cd web
+npm install
+npm run dev
+npm run build
+```
 
-- O objetivo de negócio do InspecTeam ainda não está documentado nos arquivos analisados, o que impede deduzir entidades, atores ou regras com segurança.
-- Não há contrato de API nem arquitetura de camadas definida; implementar funcionalidades antes dessas decisões pode criar estruturas incompatíveis com a intenção do produto.
-- O uso de maiúsculas no pacote pode gerar inconsistência com convenções e ferramentas Java.
-- A cobertura existente detecta falhas básicas de configuração, mas ainda não protege comportamentos funcionais.
-- A versão atual do Spring Boot deve permanecer compatível com as dependências que forem adicionadas futuramente; cada nova integração deverá respeitar o ecossistema do Spring Boot 4.1.0 e Java 21.
-- Os avisos de instrumentação do Mockito/Byte Buddy merecem acompanhamento para compatibilidade com versões futuras da JVM.
+Portas locais padrão: API `8080`, PostgreSQL `5432`, web `3000`, MinIO API `9000` e console MinIO `9001`.
 
-## 11. Próximos passos sugeridos
+## Validação realizada
 
-As ações abaixo são recomendações e ainda não estão implementadas:
+O backend foi validado com `.\mvnw.cmd test`.
 
-1. Documentar o problema de negócio, os usuários, os casos de uso e os critérios de sucesso do produto.
-2. Definir se o módulo será uma API HTTP e, se for, escolher o starter web e o formato dos contratos.
-3. Estabelecer a arquitetura inicial, os limites entre domínio, aplicação e infraestrutura e uma convenção de pacotes em minúsculas.
-4. Definir persistência, ambientes e estratégia de migrações somente após compreender os requisitos de dados.
-5. Implementar o primeiro fluxo vertical com testes unitários e de integração proporcionais ao comportamento criado.
-6. Adicionar documentação operacional e de API conforme surgirem endpoints e dependências externas.
-7. Configurar controle de versão e integração contínua quando o diretório for promovido a um repositório de trabalho compartilhado.
+- 2 testes executados;
+- 0 falhas e 0 erros;
+- PostgreSQL 18 iniciado por Testcontainers;
+- nove migrações Flyway aplicadas;
+- contexto Spring carregado;
+- fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
 
-## 12. Limites desta análise
+O frontend foi validado com `npm run build`, concluído sem erro.
 
-Esta é uma fotografia do conteúdo local disponível na data indicada. Não foram inferidos requisitos de negócio, funcionalidades futuras ou decisões arquiteturais que não estejam representados nos arquivos. Artefatos compilados em `target/` foram considerados somente como evidência de build e não como fonte primária da implementação.
+## Limitações e próximos passos
+
+Ainda não estão implementados:
+
+1. integração do frontend com autenticação e endpoints reais;
+2. aplicativo React Native e armazenamento offline no dispositivo;
+3. resolução avançada de conflitos de sincronização e fila de uploads offline;
+4. convite por e-mail, expiração de convite e troca obrigatória da senha temporária;
+5. painel global completo para o administrador da plataforma — a leitura global existe no modelo de segurança, mas mutações administrativas entre tenants ainda exigem um fluxo explícito de suporte/impersonação;
+6. OpenAPI/Swagger e exemplos formais dos contratos;
+7. recuperação de senha, MFA, rate limiting e gestão/rotação de segredos;
+8. testes de isolamento RLS entre dois tenants, autorização negativa, uploads MinIO e concorrência de sincronização;
+9. observabilidade de produção, CI/CD, backups e implantação;
+10. políticas operacionais de LGPD, retenção, exportação e exclusão de dados.
+
+## Ordem recomendada para retomar
+
+1. criar testes de segurança provando que um tenant não lê ou altera dados de outro;
+2. conectar o painel web ao cadastro/login e à listagem real de formulários;
+3. implementar no frontend o editor persistido de drafts e a publicação;
+4. formalizar OpenAPI e os contratos usados posteriormente pelo React Native;
+5. projetar o banco local e o protocolo de conflitos do aplicativo offline antes de iniciar o mobile.
+
+## Observações
+
+- A aplicação usa PostgreSQL, não H2, inclusive no teste de integração.
+- `target/`, `node_modules/`, `dist/` e `.vinext/` são descartáveis.
+- O aviso do Mockito sobre carregamento dinâmico do agente não falha o build, mas deve ser acompanhado em atualizações futuras do Java.
+- O validador de formulários utiliza uma API marcada como deprecated pelo compilador; o build passa, mas a chamada deve ser atualizada em uma manutenção futura.
+- O MinIO está adequado ao ambiente local atual; a escolha de armazenamento de produção deve ser reavaliada antes da implantação.

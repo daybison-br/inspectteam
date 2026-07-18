@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Documentação técnica e operacional do InspecTeam.">
+<title>InspecTeam · Central de documentação</title>
+<style>
+:root{color-scheme:light;--bg:#f2f6f4;--card:#fff;--soft:#f7faf8;--text:#14231e;--muted:#60716b;--line:#dce6e1;--nav:#0b252e;--green:#16835f;--green2:#0b684a;--gsoft:#e6f5ee;--warn:#a85c08;--wsoft:#fff3df;--danger:#ad3939;--dsoft:#fceaea;--code:#10272e;--codet:#e4f3ee;--shadow:0 20px 55px rgba(11,37,46,.09)}
+html[data-theme=dark]{color-scheme:dark;--bg:#091416;--card:#102125;--soft:#14282c;--text:#e8f2ef;--muted:#9eb1ab;--line:#294145;--nav:#071215;--green:#39c990;--green2:#6adbb0;--gsoft:#153a2f;--warn:#f4b457;--wsoft:#3a2d17;--danger:#ff8f8f;--dsoft:#3c2123;--code:#071316;--codet:#dff5ed;--shadow:0 20px 55px rgba(0,0,0,.28)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--green2);text-underline-offset:3px}button,input{font:inherit}:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.top{position:fixed;z-index:50;inset:0 0 auto;height:72px;display:flex;align-items:center;gap:18px;padding:0 26px;color:#f4fbf8;background:rgba(8,27,33,.97);border-bottom:1px solid #29454d}.brand{display:flex;align-items:center;gap:11px;min-width:235px}.mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;color:#06261a;background:linear-gradient(145deg,#70e5b8,#24ad78);font-weight:900}.brand strong,.brand small{display:block}.brand small{color:#9eb7af;font-size:10px}.search{position:relative;width:min(560px,48vw);margin:auto}.search input{width:100%;height:42px;padding:0 42px;border:1px solid #34535b;border-radius:12px;color:#fff;background:#17343c}.search:before{content:"⌕";position:absolute;left:14px;top:4px;color:#9db4ad;font-size:23px}.icon{width:42px;height:42px;border:1px solid #34535b;border-radius:12px;color:#fff;background:#17343c;cursor:pointer}.menu{display:none}
+.layout{display:grid;grid-template-columns:278px 1fr;padding-top:72px}.side{position:fixed;z-index:40;top:72px;bottom:0;width:278px;padding:24px 17px 38px;overflow:auto;color:#dce9e5;background:var(--nav)}.label{margin:17px 11px 6px;color:#78948b;font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.label:first-child{margin-top:0}.nav{display:flex;gap:9px;padding:8px 11px;margin:2px 0;border-radius:9px;color:#b9cec7;font-size:12px;text-decoration:none}.nav:hover,.nav.active{color:#8cebc5;background:rgba(57,201,144,.12)}.nav.active{box-shadow:inset 2px 0 #39c990}.num{width:22px;color:#68847c;font:700 9px ui-monospace,monospace}.side-note{margin:24px 7px 0;padding:13px;border:1px solid rgba(87,220,169,.18);border-radius:12px;color:#a9c2ba;background:rgba(50,183,133,.08);font-size:10px}.side-note b{display:block;color:#84e9c1}
+main{grid-column:2;width:min(1120px,calc(100vw - 278px));padding:55px 55px 95px}.hero{position:relative;overflow:hidden;padding:52px;border-radius:26px;color:#fff;background:linear-gradient(125deg,#0d2932,#123d43 58%,#0d5c49);box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;right:-95px;bottom:-145px;width:350px;height:350px;border:70px solid rgba(106,229,184,.08);border-radius:50%}.eyebrow,.index{color:#68dfb1;font-size:10px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}h1,h2,h3,h4{line-height:1.2;letter-spacing:-.035em}h1{max-width:740px;margin:10px 0;font-size:clamp(37px,5vw,61px)}.hero p{max-width:700px;color:#c7ddd6;font-size:17px}.pills,.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.pill,.tag{padding:5px 10px;border:1px solid rgba(255,255,255,.16);border-radius:999px;color:#d9ebe5;background:rgba(255,255,255,.07);font-size:10px}.tag{border-color:var(--line);border-radius:8px;color:var(--muted);background:var(--soft);font-family:ui-monospace,monospace}
+.section{padding-top:72px}.head{margin-bottom:24px}.index{color:var(--green)}h2{margin:6px 0;font-size:clamp(28px,3vw,39px)}h3{margin:32px 0 12px;font-size:21px}h4{margin:16px 0 7px;font-size:15px}.lead{max-width:790px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.grid.two{grid-template-columns:repeat(2,1fr)}.card{padding:21px;border:1px solid var(--line);border-radius:17px;background:var(--card);box-shadow:0 6px 20px rgba(12,38,47,.03)}.card h3{margin:7px 0}.kicker{color:var(--green);font-size:9px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.stat{font-size:32px;font-weight:900;letter-spacing:-.05em}.muted{color:var(--muted)}
+.call{display:grid;grid-template-columns:31px 1fr;gap:12px;margin:19px 0;padding:17px 19px;border:1px solid var(--line);border-radius:13px;background:var(--card)}.call i{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;font-style:normal;font-weight:900}.call p{margin:2px 0;color:var(--muted);font-size:13px}.call.warn{border-color:#eacb91;background:var(--wsoft)}.call.warn i{color:var(--warn)}.call.danger{border-color:#ebb1b1;background:var(--dsoft)}.call.danger i{color:var(--danger)}.call.ok{border-color:#a9dcc6;background:var(--gsoft)}.call.ok i{color:var(--green)}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:21px 0}.flow div{position:relative;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.flow div:not(:last-child):after{content:"→";position:absolute;z-index:2;right:-17px;top:34px;color:var(--green);font-weight:900}.flow b,.flow span{display:block}.flow span{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.4}
+.table{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:14px;background:var(--card)}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{color:var(--muted);background:var(--soft);font-size:9px;letter-spacing:.09em;text-transform:uppercase}tr:last-child td{border:0}.method{display:inline-block;min-width:52px;padding:3px 6px;border-radius:6px;text-align:center;font:800 9px ui-monospace,monospace}.get{color:#126096;background:#e4f2fb}.post{color:#087148;background:#e2f6ed}.patch{color:#8c5605;background:#fff0d1}.put{color:#6842a5;background:#eee7fa}.delete{color:#a83232;background:#fbe7e7}
+.codebox{margin:13px 0 20px;border:1px solid #29444b;border-radius:13px;overflow:hidden;background:var(--code)}.codebar{display:flex;align-items:center;justify-content:space-between;min-height:39px;padding:0 10px 0 14px;color:#8ea9a1;border-bottom:1px solid #29444b;font:700 9px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}.copy{padding:5px 9px;border:0;border-radius:7px;color:#c0d6cf;background:#1c3a41;cursor:pointer;font-size:10px}pre{margin:0;padding:17px;overflow:auto;color:var(--codet);font:12px/1.62 "Cascadia Code",Consolas,monospace}code{font-family:"Cascadia Code",Consolas,monospace}p code,li code,td code{padding:2px 5px;border:1px solid var(--line);border-radius:5px;color:var(--green2);background:var(--soft);font-size:.88em}.steps{counter-reset:s;list-style:none;padding:0}.steps>li{position:relative;padding:3px 0 19px 50px;margin-bottom:15px;border-bottom:1px solid var(--line)}.steps>li:before{counter-increment:s;content:counter(s);position:absolute;left:0;display:grid;place-items:center;width:33px;height:33px;border-radius:10px;color:#fff;background:var(--green);font-weight:850}.check{padding:0;list-style:none}.check li{position:relative;padding:5px 0 5px 25px}.check li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+.status{display:grid;gap:9px}.status div{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--card)}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--gsoft)}.pending .dot{background:var(--warn);box-shadow:0 0 0 5px var(--wsoft)}.status small{color:var(--muted)}.tabs{display:flex;gap:4px;width:max-content;padding:4px;border:1px solid var(--line);border-radius:11px;background:var(--soft)}.tab{padding:6px 12px;border:0;border-radius:7px;color:var(--muted);background:transparent;cursor:pointer;font-weight:700;font-size:11px}.tab[aria-selected=true]{color:#fff;background:var(--green)}[hidden]{display:none!important}.noresults{display:none;padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:15px}footer{margin-top:80px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}.overlay{display:none}
+@media(max-width:980px){.top{padding:0 14px}.brand{min-width:auto}.brand span{display:none}.menu{display:block}.side{transform:translateX(-105%);transition:.2s}.nav-open .side{transform:none}.nav-open .overlay{display:block;position:fixed;z-index:35;inset:72px 0 0;background:#03101399}.layout{display:block}main{width:100%;padding:38px 27px 75px}.grid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr}.flow div:not(:last-child):after{content:"↓";left:50%;right:auto;top:auto;bottom:-18px}}@media(max-width:640px){main{padding:25px 15px 60px}.hero{padding:31px 23px}.grid,.grid.two{grid-template-columns:1fr}.search{width:100%}.brand{display:none}.section{padding-top:55px}}@media print{.top,.side,.copy,.tabs{display:none!important}.layout{display:block;padding:0}main{width:100%;padding:0}.hero{color:#111;background:#fff;border:1px solid #ccc;box-shadow:none}.section{break-inside:avoid;padding-top:35px}}
+</style>
+</head>
+<body>
+<header class="top"><button class="icon menu" id="menu" aria-label="Abrir menu" aria-expanded="false">☰</button><div class="brand"><div class="mark">IT</div><span><strong>InspecTeam</strong><small>Central técnica · 2026.07</small></span></div><label class="search"><input id="search" type="search" placeholder="Buscar módulos, endpoints ou comandos…" aria-label="Buscar na documentação"></label><button class="icon" id="theme" aria-label="Alternar tema">◐</button></header>
+<div class="overlay" id="overlay"></div><div class="layout">
+<aside class="side"><div class="label">Comece aqui</div>
+<a class="nav active" href="#inicio"><span class="num">00</span>Visão geral</a><a class="nav" href="#estado"><span class="num">01</span>Estado do produto</a><a class="nav" href="#arquitetura"><span class="num">02</span>Arquitetura</a><a class="nav" href="#modulos"><span class="num">03</span>Módulos</a>
+<div class="label">Referência</div><a class="nav" href="#dados"><span class="num">04</span>Dados e segurança</a><a class="nav" href="#api"><span class="num">05</span>API HTTP</a><a class="nav" href="#formularios"><span class="num">06</span>Formulários</a><a class="nav" href="#offline"><span class="num">07</span>Offline e arquivos</a>
+<div class="label">Execução</div><a class="nav" href="#desenvolvimento"><span class="num">08</span>Ambiente local</a><a class="nav" href="#producao"><span class="num">09</span>VPS Hostinger</a><a class="nav" href="#operacao"><span class="num">10</span>Operação e backup</a><a class="nav" href="#problemas"><span class="num">11</span>Problemas comuns</a><a class="nav" href="#fontes"><span class="num">12</span>Fontes oficiais</a><div class="side-note"><b>MVP vertical validado</b>Frontend ainda não integrado à API.</div></aside>
+<main><section class="hero searchable" id="inicio"><span class="eyebrow">Documentação oficial do projeto</span><h1>Construa, execute e opere o InspecTeam.</h1><p>Referência completa do SaaS multi-tenant para formulários operacionais — do ambiente local à implantação segura em uma VPS Ubuntu.</p><div class="pills"><span class="pill">Java 21</span><span class="pill">Spring Boot 4.1</span><span class="pill">PostgreSQL 18</span><span class="pill">React 19</span><span class="pill">Flyway</span><span class="pill">MinIO</span></div></section>
+<section class="section searchable" id="estado"><div class="head"><span class="index">01 · produto</span><h2>O que existe hoje</h2><p class="lead">O backend possui um fluxo vertical funcional e testado. O painel web é um protótipo visual interativo, ainda sem integração com a API.</p></div>
+<div class="grid"><article class="card"><span class="kicker">Backend</span><div class="stat">42</div><p class="muted">arquivos Java organizados por capacidade.</p></article><article class="card"><span class="kicker">Banco</span><div class="stat">9</div><p class="muted">migrações Flyway aplicadas em PostgreSQL.</p></article><article class="card"><span class="kicker">Validação</span><div class="stat">2/2</div><p class="muted">testes passando com Testcontainers.</p></article></div>
+<h3>Capacidades</h3><div class="status"><div><span class="dot"></span><b>Identidade e tenants</b><small>registro, login, refresh e seleção</small></div><div><span class="dot"></span><b>Permissões detalhadas</b><small>papéis e grants por formulário</small></div><div><span class="dot"></span><b>Formulários versionados</b><small>draft, validação e publicação</small></div><div><span class="dot"></span><b>Sincronização inicial</b><small>pull, push e idempotência</small></div><div class="pending"><span class="dot"></span><b>Integração do painel web</b><small>planejada</small></div><div class="pending"><span class="dot"></span><b>Aplicativo React Native</b><small>fase futura</small></div></div>
+<div class="call warn"><i>!</i><div><b>Frontend em estágio de protótipo</b><p>A interface demonstra a experiência do construtor, mas autenticação, persistência e publicação ainda são simuladas no navegador.</p></div></div></section>
+
+<section class="section searchable" id="arquitetura"><div class="head"><span class="index">02 · arquitetura</span><h2>Visão técnica</h2><p class="lead">Um monólito modular mantém os contextos coesos e reduz a complexidade operacional nesta fase do produto.</p></div>
+<div class="flow"><div><b>Web / Mobile</b><span>gestão e preenchimento</span></div><div><b>Nginx</b><span>HTTPS e proxy em produção</span></div><div><b>Spring Boot</b><span>API, regras e sync</span></div><div><b>PostgreSQL</b><span>JSONB, Flyway e RLS</span></div><div><b>MinIO</b><span>fotos e assinaturas</span></div></div>
+<div class="grid two"><article class="card"><span class="kicker">Estratégia</span><h3>Monólito modular</h3><p>Cada módulo mantém API, serviços, domínio e infraestrutura próximos, organizados pela funcionalidade de negócio.</p></article><article class="card"><span class="kicker">Isolamento</span><h3>Defesa em profundidade</h3><p>A aplicação valida membership e permissões; o PostgreSQL reforça o isolamento por Row-Level Security.</p></article></div>
+<h3>Stack confirmada</h3><div class="tags"><span class="tag">Java 21</span><span class="tag">Spring Boot 4.1.0</span><span class="tag">Spring Security</span><span class="tag">Spring JDBC</span><span class="tag">JWT HS256</span><span class="tag">BCrypt 12</span><span class="tag">PostgreSQL 18</span><span class="tag">Flyway 12</span><span class="tag">MinIO 8.6</span><span class="tag">React 19.2</span><span class="tag">Vinext 0.0.50</span><span class="tag">Vite 8</span></div></section>
+
+<section class="section searchable" id="modulos"><div class="head"><span class="index">03 · módulos</span><h2>Responsabilidades do backend</h2></div><div class="grid">
+<article class="card"><span class="kicker">auth</span><h3>Autenticação</h3><p>Cadastro do tenant proprietário, login, access token e rotação de refresh token.</p></article>
+<article class="card"><span class="kicker">tenant + user</span><h3>Organizações</h3><p>Memberships, consulta dos tenants, cadastro e suspensão de funcionários.</p></article>
+<article class="card"><span class="kicker">permission</span><h3>Autorização</h3><p>Papéis, permissões e grants para usuário ou papel em um formulário.</p></article>
+<article class="card"><span class="kicker">form</span><h3>Formulários</h3><p>Validação da definição, edição de draft e versões publicadas imutáveis.</p></article>
+<article class="card"><span class="kicker">submission + sync</span><h3>Execução</h3><p>Respostas idempotentes, revisão otimista, conclusão e sincronização.</p></article>
+<article class="card"><span class="kicker">file + audit</span><h3>Evidências</h3><p>Upload pré-assinado, validação de tamanho e trilha das operações.</p></article></div></section>
+<section class="section searchable" id="dados"><div class="head"><span class="index">04 · dados e segurança</span><h2>Multi-tenancy e persistência</h2><p class="lead">O banco é compartilhado entre tenants, com <code>tenant_id</code> nas entidades operacionais e políticas de isolamento aplicadas pelo PostgreSQL.</p></div>
+<div class="grid two"><article class="card"><h3>Autenticação</h3><ul class="check"><li>JWT HMAC SHA-256</li><li>Access token: 15 minutos</li><li>Refresh token: 30 dias, armazenado como hash</li><li>BCrypt com custo 12</li><li>API stateless</li></ul></article><article class="card"><h3>Autorização</h3><ul class="check"><li>Owner com controle do tenant</li><li>Administrador global identificado no token</li><li>Papéis customizados por tenant</li><li>Grants por formulário</li><li>Política padrão: negar</li></ul></article></div>
+<h3>Migrações Flyway</h3><div class="table"><table><thead><tr><th>Versão</th><th>Responsabilidade</th></tr></thead><tbody><tr><td>V001</td><td>Usuários e refresh tokens</td></tr><tr><td>V002</td><td>Tenants e memberships</td></tr><tr><td>V003</td><td>Papéis, permissões e associações</td></tr><tr><td>V004</td><td>Formulários e versões</td></tr><tr><td>V005</td><td>Submissões e revisões</td></tr><tr><td>V006</td><td>Arquivos</td></tr><tr><td>V007</td><td>Dispositivos e controle de sincronização</td></tr><tr><td>V008</td><td>Eventos de auditoria</td></tr><tr><td>V009</td><td>Row-Level Security</td></tr></tbody></table></div>
+<div class="call ok"><i>✓</i><div><b>Regra de evolução</b><p>Crie uma nova migração para toda alteração de esquema. Não reescreva migrações já compartilhadas ou aplicadas em outros ambientes.</p></div></div></section>
+
+<section class="section searchable" id="api"><div class="head"><span class="index">05 · API HTTP</span><h2>Catálogo de endpoints</h2><p class="lead">Base local: <code>http://localhost:8080/api/v1</code>. Exceto autenticação e health check, envie <code>Authorization: Bearer &lt;token&gt;</code>.</p></div>
+<h3>Autenticação e tenants</h3><div class="table"><table><thead><tr><th>Método</th><th>Rota</th><th>Descrição</th><th>Auth</th></tr></thead><tbody>
+<tr><td><span class="method post">POST</span></td><td><code>/auth/register-tenant</code></td><td>Cria usuário, tenant e owner.</td><td>Não</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/auth/login</code></td><td>Autentica por e-mail e senha.</td><td>Não</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/auth/refresh</code></td><td>Rotaciona o refresh token.</td><td>Não</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/auth/logout</code></td><td>Revoga o refresh token.</td><td>Não</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/tenants</code></td><td>Lista tenants do usuário.</td><td>Sim</td></tr></tbody></table></div>
+<div class="codebox"><div class="codebar">Exemplo · registrar tenant<button class="copy">Copiar</button></div><pre><code>curl -X POST http://localhost:8080/api/v1/auth/register-tenant \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tenantName": "Guinchos Exemplo",
+    "tenantSlug": "guinchos-exemplo",
+    "displayName": "Maria Silva",
+    "email": "maria@example.com",
+    "password": "troque-esta-senha",
+    "deviceName": "Painel web"
+  }'</code></pre></div>
+<h3>Gestão do tenant</h3><div class="table"><table><thead><tr><th>Método</th><th>Rota relativa a <code>/tenants/{tenantId}</code></th><th>Descrição</th></tr></thead><tbody>
+<tr><td><span class="method get">GET</span></td><td><code>/users</code></td><td>Lista funcionários e memberships.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/users</code></td><td>Cria funcionário com senha temporária.</td></tr>
+<tr><td><span class="method delete">DELETE</span></td><td><code>/users/{membershipId}</code></td><td>Suspende uma membership.</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/permissions/roles</code></td><td>Lista papéis do tenant.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/permissions/roles</code></td><td>Cria um papel.</td></tr>
+<tr><td><span class="method put">PUT</span></td><td><code>/permissions/roles/{roleId}/permissions</code></td><td>Substitui permissões do papel.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/permissions/roles/{roleId}/members/{membershipId}</code></td><td>Atribui papel ao funcionário.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/permissions/forms/{formId}/grants</code></td><td>Concede acesso específico ao formulário.</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/audit?limit=100</code></td><td>Consulta até 500 eventos de auditoria.</td></tr></tbody></table></div>
+<h3>Formulários e operação</h3><div class="table"><table><thead><tr><th>Método</th><th>Rota relativa ao tenant</th><th>Descrição</th></tr></thead><tbody>
+<tr><td><span class="method post">POST</span></td><td><code>/forms</code></td><td>Cria formulário e draft inicial.</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/forms</code></td><td>Lista formulários acessíveis.</td></tr>
+<tr><td><span class="method patch">PATCH</span></td><td><code>/forms/{formId}/draft</code></td><td>Atualiza a definição JSON.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/forms/{formId}/publish</code></td><td>Publica versão imutável.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/submissions</code></td><td>Cria resposta idempotente.</td></tr>
+<tr><td><span class="method patch">PATCH</span></td><td><code>/submissions/{id}</code></td><td>Salva rascunho com revisão.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/submissions/{id}/complete</code></td><td>Conclui a resposta.</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/submissions?formId={uuid}</code></td><td>Lista respostas do formulário.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/sync/devices</code></td><td>Registra dispositivo.</td></tr>
+<tr><td><span class="method get">GET</span></td><td><code>/sync/pull?cursor=0</code></td><td>Baixa versões e tombstones.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/sync/push</code></td><td>Processa até 100 mutações.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/files/upload-sessions</code></td><td>Gera URL de upload válida por uma hora.</td></tr>
+<tr><td><span class="method post">POST</span></td><td><code>/files/{fileId}/complete</code></td><td>Confirma upload e tamanho.</td></tr></tbody></table></div>
+<div class="call warn"><i>!</i><div><b>Problem Details</b><p>Falhas são retornadas no formato padronizado HTTP Problem Details. Clientes devem tratar especialmente 400, 401, 403, 404, 409 e 503.</p></div></div></section>
+
+<section class="section searchable" id="formularios"><div class="head"><span class="index">06 · formulários</span><h2>Definição e versionamento</h2><p class="lead">A definição é armazenada como JSONB. IDs de campos devem ser estáveis e únicos para preservar respostas entre sincronizações.</p></div>
+<div class="tags"><span class="tag">text</span><span class="tag">textarea</span><span class="tag">number</span><span class="tag">date</span><span class="tag">time</span><span class="tag">select</span><span class="tag">multiselect</span><span class="tag">checkbox</span><span class="tag">photo</span><span class="tag">signature</span><span class="tag">heading</span><span class="tag">instructions</span></div>
+<div class="codebox"><div class="codebar">Definição mínima válida<button class="copy">Copiar</button></div><pre><code>{
+  "sections": [{
+    "id": "veiculo",
+    "fields": [{
+      "id": "placa",
+      "type": "text",
+      "label": "Placa do veículo",
+      "required": true
+    }]
+  }]
+}</code></pre></div>
+<div class="grid two"><article class="card"><h3>Draft</h3><p>Editável por usuários com <code>FORM_EDIT</code>. A definição é validada antes de persistir.</p></article><article class="card"><h3>Publicado</h3><p>Imutável e utilizado pelas submissões. A publicação cria automaticamente o próximo draft.</p></article></div></section>
+
+<section class="section searchable" id="offline"><div class="head"><span class="index">07 · offline e arquivos</span><h2>Sincronização preparada para mobile</h2><p class="lead">O protocolo inicial permite que o futuro aplicativo mantenha uma fila local e reenvie operações com segurança após recuperar conexão.</p></div>
+<div class="flow"><div><b>Registrar</b><span>deviceId vinculado à membership</span></div><div><b>Pull</b><span>versões autorizadas e tombstones</span></div><div><b>Editar offline</b><span>UUIDs gerados no cliente</span></div><div><b>Push</b><span>CREATE, UPDATE e COMPLETE</span></div><div><b>Confirmar</b><span>mutationId impede duplicação</span></div></div>
+<div class="grid two"><article class="card"><h3>Concorrência</h3><p>A propriedade <code>revision</code> aplica controle otimista. Revisão divergente deve gerar conflito e não sobrescrever silenciosamente.</p></article><article class="card"><h3>Arquivos</h3><p>Fotos e assinaturas usam upload direto ao MinIO por URL pré-assinada. O limite atual é 20 MB e a API confirma o tamanho esperado.</p></article></div>
+<div class="call warn"><i>!</i><div><b>Ainda é um protocolo inicial</b><p>Banco local mobile, fila de uploads, política avançada de conflitos e experiência de recuperação permanecem como trabalho futuro.</p></div></div></section>
+<section class="section searchable" id="desenvolvimento"><div class="head"><span class="index">08 · desenvolvimento</span><h2>Executar localmente</h2><p class="lead">O fluxo recomendado usa Docker para PostgreSQL e MinIO, mantendo API e frontend em processos locais para recarga rápida.</p></div>
+<h3>Pré-requisitos</h3><div class="grid two"><article class="card"><h4>Ferramentas</h4><ul class="check"><li>Git</li><li>JDK 21</li><li>Node.js 22.13 ou superior</li><li>Docker Desktop ou Engine com Compose</li></ul></article><article class="card"><h4>Portas</h4><div class="table"><table><tbody><tr><td>Web</td><td><code>3000</code></td></tr><tr><td>API</td><td><code>8080</code></td></tr><tr><td>PostgreSQL</td><td><code>5432</code></td></tr><tr><td>MinIO</td><td><code>9000 / 9001</code></td></tr></tbody></table></div></article></div>
+<ol class="steps">
+<li><b>Obtenha o projeto e entre na raiz.</b><div class="codebox"><div class="codebar">Terminal<button class="copy">Copiar</button></div><pre><code>git clone &lt;URL_DO_REPOSITORIO&gt; inspecteam
+cd inspecteam</code></pre></div></li>
+<li><b>Crie o arquivo de ambiente local.</b><p>O arquivo de exemplo não contém segredos de produção. Ao iniciar a API a partir da pasta <code>api</code>, o Spring importa automaticamente o <code>.env</code> da raiz e reutiliza as credenciais do PostgreSQL e do MinIO.</p><div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-panel="win-env">Windows</button><button class="tab" role="tab" aria-selected="false" data-panel="unix-env">Unix</button></div>
+<div id="win-env"><div class="codebox"><div class="codebar">PowerShell<button class="copy">Copiar</button></div><pre><code>Copy-Item .env.example .env</code></pre></div></div><div id="unix-env" hidden><div class="codebox"><div class="codebar">Bash<button class="copy">Copiar</button></div><pre><code>cp .env.example .env</code></pre></div></div></li>
+<li><b>Suba PostgreSQL e MinIO.</b><div class="codebox"><div class="codebar">Raiz do projeto<button class="copy">Copiar</button></div><pre><code>docker compose up -d
+docker compose ps</code></pre></div></li>
+<li><b>Inicie a API.</b><div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-panel="win-api">Windows</button><button class="tab" role="tab" aria-selected="false" data-panel="unix-api">Unix</button></div>
+<div id="win-api"><div class="codebox"><div class="codebar">PowerShell<button class="copy">Copiar</button></div><pre><code>cd api
+.\mvnw.cmd spring-boot:run</code></pre></div></div><div id="unix-api" hidden><div class="codebox"><div class="codebar">Bash<button class="copy">Copiar</button></div><pre><code>cd api
+./mvnw spring-boot:run</code></pre></div></div><p>O Flyway aplicará as migrações automaticamente. Confirme em <a href="http://localhost:8080/actuator/health"><code>localhost:8080/actuator/health</code></a>.</p></li>
+<li><b>Inicie o frontend em outro terminal.</b><div class="codebox"><div class="codebar">Terminal<button class="copy">Copiar</button></div><pre><code>cd web
+npm ci
+npm run dev</code></pre></div><p>Acesse <a href="http://localhost:3000"><code>localhost:3000</code></a>. O protótipo atual renderiza sem depender da API.</p></li></ol>
+<h3>Testes e builds</h3><div class="grid two"><article class="card"><h4>Backend · Windows</h4><div class="codebox"><div class="codebar">PowerShell<button class="copy">Copiar</button></div><pre><code>cd api
+.\mvnw.cmd clean test
+.\mvnw.cmd clean package</code></pre></div><p class="muted">O Docker precisa estar ativo para Testcontainers.</p></article><article class="card"><h4>Backend · Unix e frontend</h4><div class="codebox"><div class="codebar">Bash<button class="copy">Copiar</button></div><pre><code>cd api
+./mvnw clean test
+./mvnw clean package
+
+cd ../web
+npm run build</code></pre></div></article></div>
+<h3>Parar o ambiente</h3><div class="codebox"><div class="codebar">Terminal<button class="copy">Copiar</button></div><pre><code>docker compose stop
+
+# Remove containers, preservando os volumes:
+docker compose down
+
+# Atenção: também apaga dados locais:
+docker compose down -v</code></pre></div>
+<div class="call danger"><i>×</i><div><b>O compose atual é somente para desenvolvimento</b><p>Ele publica PostgreSQL e MinIO em todas as interfaces. Não use esse desenho diretamente em uma VPS pública.</p></div></div>
+<div class="call warn"><i>!</i><div><b>Proteção no Git</b><p>Nunca force a inclusão de arquivos ignorados. O `.gitignore` da raiz bloqueia `.env`, chaves privadas, keystores, configurações sensíveis, backups, logs, dependências e builds. Somente `.env.example`, com placeholders, deve ser versionado.</p></div></div></section>
+<section class="section searchable" id="producao"><div class="head"><span class="index">09 · produção</span><h2>Implantar em VPS Hostinger</h2><p class="lead">Referência para Ubuntu 24.04 LTS, Nginx, systemd e Docker somente nos serviços de dados. Use <code>app.seudominio.com</code> e <code>storage.seudominio.com</code> como placeholders.</p></div>
+<div class="call warn"><i>!</i><div><b>Antes de começar</b><p>O frontend ainda não consome a API. A implantação permite visualizar o protótipo e disponibilizar a API, mas não transforma a interface atual em um painel funcional.</p></div></div>
+<h3>Topologia recomendada</h3><div class="grid"><article class="card"><span class="kicker">Internet</span><h3>Portas públicas</h3><p><code>22</code> SSH, <code>80</code> HTTP e <code>443</code> HTTPS.</p></article><article class="card"><span class="kicker">Loopback</span><h3>Serviços internos</h3><p><code>127.0.0.1:3000</code>, <code>:8080</code>, <code>:5432</code>, <code>:9000</code> e <code>:9001</code>.</p></article><article class="card"><span class="kicker">DNS</span><h3>Dois hosts</h3><p>Aplicação em <code>app</code> e uploads pré-assinados em <code>storage</code>.</p></article></div>
+<ol class="steps">
+<li><b>Provisione a VPS.</b><p>No hPanel, escolha Ubuntu 24.04 LTS. Como referência inicial, use ao menos 2 vCPU, 4 GB RAM e armazenamento compatível com as fotos. Cadastre uma chave SSH e crie registros DNS A para os dois subdomínios apontando ao IP da VPS.</p></li>
+<li><b>Conecte e crie um usuário operacional.</b><div class="codebox"><div class="codebar">Sua máquina<button class="copy">Copiar</button></div><pre><code>ssh root@&lt;IP_DA_VPS&gt;</code></pre></div><div class="codebox"><div class="codebar">VPS<button class="copy">Copiar</button></div><pre><code>adduser deploy
+usermod -aG sudo deploy
+install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
+cp /root/.ssh/authorized_keys /home/deploy/.ssh/authorized_keys
+chown deploy:deploy /home/deploy/.ssh/authorized_keys
+chmod 600 /home/deploy/.ssh/authorized_keys
+ssh deploy@&lt;IP_DA_VPS&gt;</code></pre></div></li>
+<li><b>Atualize o sistema e configure o firewall.</b><p>Libere SSH antes de ativar o UFW para não perder acesso.</p><div class="codebox"><div class="codebar">Ubuntu<button class="copy">Copiar</button></div><pre><code>sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo apt install -y git curl ca-certificates gnupg nginx openjdk-21-jdk ufw snapd
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+sudo ufw status</code></pre></div><p>Repita as regras 22, 80 e 443 no firewall da Hostinger em <b>Security → Firewall</b>. Não libere 3000, 5432, 8080, 9000 ou 9001.</p></li>
+<li><b>Instale Docker pelo repositório oficial.</b><div class="codebox"><div class="codebar">Ubuntu<button class="copy">Copiar</button></div><pre><code>sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+sudo tee /etc/apt/sources.list.d/docker.sources &gt;/dev/null &lt;&lt;EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release &amp;&amp; echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker $USER
+sudo systemctl enable --now docker</code></pre></div><p>Saia e entre novamente no SSH após adicionar o usuário ao grupo <code>docker</code>.</p></li>
+<li><b>Instale Node.js 22.</b><p>O projeto exige Node 22.13 ou superior. O exemplo configura o repositório NodeSource sem executar um script remoto diretamente.</p><div class="codebox"><div class="codebar">Ubuntu<button class="copy">Copiar</button></div><pre><code>sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" \
+  | sudo tee /etc/apt/sources.list.d/nodesource.list
+sudo apt update &amp;&amp; sudo apt install -y nodejs
+java -version
+node -v
+npm -v
+docker compose version</code></pre></div></li>
+<li><b>Prepare diretórios e obtenha o código.</b><div class="codebox"><div class="codebar">Ubuntu<button class="copy">Copiar</button></div><pre><code>sudo mkdir -p /opt/inspecteam/releases /opt/inspecteam/shared
+sudo chown -R deploy:deploy /opt/inspecteam
+cd /opt/inspecteam/releases
+git clone &lt;URL_DO_REPOSITORIO&gt; release-001
+ln -sfn /opt/inspecteam/releases/release-001 /opt/inspecteam/current</code></pre></div></li>
+<li><b>Crie segredos de produção.</b><div class="codebox"><div class="codebar">Gerar valores<button class="copy">Copiar</button></div><pre><code>openssl rand -base64 48
+openssl rand -base64 36</code></pre></div><p>Salve em <code>/opt/inspecteam/shared/inspecteam.env</code>, com permissão 600:</p><div class="codebox"><div class="codebar">inspecteam.env<button class="copy">Copiar</button></div><pre><code>DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/inspecteam
+DATABASE_USERNAME=inspecteam_owner
+DATABASE_PASSWORD=&lt;SENHA_FORTE_POSTGRES&gt;
+JWT_SECRET=&lt;SEGREDO_ALEATORIO_COM_32_BYTES_OU_MAIS&gt;
+STORAGE_ENDPOINT=https://storage.seudominio.com
+STORAGE_BUCKET=inspecteam
+STORAGE_ACCESS_KEY=inspecteam
+STORAGE_SECRET_KEY=&lt;SENHA_FORTE_MINIO&gt;
+NODE_ENV=production
+PORT=3000</code></pre></div><div class="codebox"><div class="codebar">Permissões<button class="copy">Copiar</button></div><pre><code>sudo chown root:deploy /opt/inspecteam/shared/inspecteam.env
+sudo chmod 640 /opt/inspecteam/shared/inspecteam.env</code></pre></div></li>
+<li><b>Crie um Compose exclusivo de produção.</b><p>Salve como <code>/opt/inspecteam/shared/compose.production.yaml</code>. As portas são vinculadas somente a <code>127.0.0.1</code>.</p><div class="codebox"><div class="codebar">compose.production.yaml<button class="copy">Copiar</button></div><pre><code>services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: inspecteam
+      POSTGRES_USER: inspecteam_owner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inspecteam_owner -d inspecteam"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: inspecteam
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  minio_data:</code></pre></div><p>Crie também <code>/opt/inspecteam/shared/data.env</code> com <code>POSTGRES_PASSWORD</code> e <code>MINIO_ROOT_PASSWORD</code>, usando os mesmos valores do arquivo da aplicação, e aplique <code>chmod 640</code>.</p><div class="codebox"><div class="codebar">Subir dados<button class="copy">Copiar</button></div><pre><code>cd /opt/inspecteam/shared
+docker compose --env-file data.env -f compose.production.yaml up -d
+docker compose -f compose.production.yaml ps</code></pre></div></li>
+<li><b>Faça os builds de produção.</b><div class="codebox"><div class="codebar">Release atual<button class="copy">Copiar</button></div><pre><code>cd /opt/inspecteam/current/api
+./mvnw clean package -DskipTests
+
+cd /opt/inspecteam/current/web
+npm ci
+npm run build</code></pre></div></li></ol>
+<h3>Supervisionar API e frontend</h3>
+<p>Crie <code>/etc/systemd/system/inspecteam-api.service</code>:</p><div class="codebox"><div class="codebar">systemd · API<button class="copy">Copiar</button></div><pre><code>[Unit]
+Description=InspecTeam API
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/opt/inspecteam/current/api
+EnvironmentFile=/opt/inspecteam/shared/inspecteam.env
+ExecStart=/usr/bin/java -jar /opt/inspecteam/current/api/target/inspecteam-api-0.0.1-SNAPSHOT.jar
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=143
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target</code></pre></div>
+<p>Crie <code>/etc/systemd/system/inspecteam-web.service</code>:</p><div class="codebox"><div class="codebar">systemd · web<button class="copy">Copiar</button></div><pre><code>[Unit]
+Description=InspecTeam Web
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/opt/inspecteam/current/web
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+Environment=VINEXT_TRUST_PROXY=1
+Environment=VINEXT_TRUSTED_HOSTS=app.seudominio.com
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target</code></pre></div>
+<div class="codebox"><div class="codebar">Ativar serviços<button class="copy">Copiar</button></div><pre><code>sudo systemctl daemon-reload
+sudo systemctl enable --now inspecteam-api inspecteam-web
+sudo systemctl status inspecteam-api --no-pager
+sudo systemctl status inspecteam-web --no-pager
+curl http://127.0.0.1:8080/actuator/health
+curl -I http://127.0.0.1:3000</code></pre></div>
+
+<h3>Configurar Nginx</h3><p>Salve em <code>/etc/nginx/sites-available/inspecteam</code>. O proxy da API no mesmo host evita a necessidade de CORS para o futuro painel web.</p>
+<div class="codebox"><div class="codebar">Nginx<button class="copy">Copiar</button></div><pre><code>server {
+    listen 80;
+    listen [::]:80;
+    server_name app.seudominio.com;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name storage.seudominio.com;
+    client_max_body_size 20m;
+
+    location / {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_request_buffering off;
+    }
+}</code></pre></div>
+<div class="codebox"><div class="codebar">Ativar Nginx<button class="copy">Copiar</button></div><pre><code>sudo ln -s /etc/nginx/sites-available/inspecteam /etc/nginx/sites-enabled/inspecteam
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl reload nginx</code></pre></div>
+<div class="call warn"><i>!</i><div><b>Preserve o Host do storage</b><p>URLs pré-assinadas incluem o host na assinatura. O subdomínio configurado em <code>STORAGE_ENDPOINT</code> deve ser exatamente o mesmo usado pelo cliente e pelo Nginx.</p></div></div>
+
+<h3>Ativar HTTPS</h3><p>Espere a propagação dos dois registros DNS antes de solicitar os certificados.</p><div class="codebox"><div class="codebar">Certbot<button class="copy">Copiar</button></div><pre><code>sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
+sudo certbot --nginx -d app.seudominio.com -d storage.seudominio.com
+sudo certbot renew --dry-run</code></pre></div>
+<h3>Checklist de publicação</h3><ul class="check"><li><code>https://app.seudominio.com</code> abre sem alerta de certificado.</li><li><code>/api/v1/auth/login</code> chega à API pelo mesmo domínio.</li><li>PostgreSQL e MinIO não respondem pelo IP público.</li><li>Health check local retorna <code>UP</code>.</li><li>Upload pré-assinado usa <code>https://storage.seudominio.com</code>.</li><li>Reinicialização da VPS traz Docker, API, web e Nginx automaticamente.</li></ul>
+</section>
+<section class="section searchable" id="operacao"><div class="head"><span class="index">10 · operação</span><h2>Logs, atualização e backup</h2><p class="lead">Produção exige rotinas verificáveis. Um backup só é válido depois de um teste de restauração.</p></div>
+<h3>Observar serviços</h3><div class="grid two"><article class="card"><h4>Aplicação</h4><div class="codebox"><div class="codebar">Logs<button class="copy">Copiar</button></div><pre><code>sudo journalctl -u inspecteam-api -f
+sudo journalctl -u inspecteam-web -f
+sudo journalctl -u nginx -f</code></pre></div></article><article class="card"><h4>Dados</h4><div class="codebox"><div class="codebar">Docker<button class="copy">Copiar</button></div><pre><code>cd /opt/inspecteam/shared
+docker compose -f compose.production.yaml ps
+docker compose -f compose.production.yaml logs -f postgres
+docker compose -f compose.production.yaml logs -f minio</code></pre></div></article></div>
+<h3>Publicar uma nova versão</h3><ol class="steps"><li><b>Crie um diretório de release, sem sobrescrever o atual.</b><div class="codebox"><div class="codebar">Deploy<button class="copy">Copiar</button></div><pre><code>cd /opt/inspecteam/releases
+git clone &lt;URL_DO_REPOSITORIO&gt; release-002
+cd release-002/api &amp;&amp; ./mvnw clean test package
+cd ../web &amp;&amp; npm ci &amp;&amp; npm run build</code></pre></div></li><li><b>Troque o link e reinicie.</b><div class="codebox"><div class="codebar">Ativar release<button class="copy">Copiar</button></div><pre><code>ln -sfn /opt/inspecteam/releases/release-002 /opt/inspecteam/current
+sudo systemctl restart inspecteam-api inspecteam-web
+curl http://127.0.0.1:8080/actuator/health</code></pre></div></li><li><b>Em caso de falha, faça rollback.</b><div class="codebox"><div class="codebar">Rollback<button class="copy">Copiar</button></div><pre><code>ln -sfn /opt/inspecteam/releases/release-001 /opt/inspecteam/current
+sudo systemctl restart inspecteam-api inspecteam-web</code></pre></div></li></ol>
+<div class="call warn"><i>!</i><div><b>Migrações podem impedir rollback</b><p>Antes de publicar, confirme que a versão anterior da aplicação continua compatível com as novas migrações. Prefira alterações de banco expansíveis e reversíveis.</p></div></div>
+<h3>Backup do PostgreSQL</h3><div class="codebox"><div class="codebar">Backup lógico<button class="copy">Copiar</button></div><pre><code>mkdir -p /opt/inspecteam/backups
+cd /opt/inspecteam/shared
+docker compose -f compose.production.yaml exec -T postgres \
+  pg_dump -U inspecteam_owner -d inspecteam -Fc \
+  &gt; /opt/inspecteam/backups/postgres-$(date +%F-%H%M).dump</code></pre></div>
+<p>Restaure primeiro em ambiente separado:</p><div class="codebox"><div class="codebar">Teste de restauração<button class="copy">Copiar</button></div><pre><code>cat /opt/inspecteam/backups/&lt;ARQUIVO&gt;.dump | \
+docker compose -f compose.production.yaml exec -T postgres \
+  pg_restore -U inspecteam_owner -d &lt;BANCO_DE_TESTE&gt; --clean --if-exists</code></pre></div>
+<h3>Backup dos objetos MinIO</h3><p>Use snapshots do volume da VPS ou uma ferramenta compatível com S3 para espelhar o bucket em armazenamento externo. Para uma cópia local consistente, pare brevemente o MinIO e compacte o volume correto.</p><div class="codebox"><div class="codebar">Janela de manutenção<button class="copy">Copiar</button></div><pre><code>cd /opt/inspecteam/shared
+docker compose -f compose.production.yaml stop minio
+docker volume ls
+docker run --rm \
+  -v &lt;NOME_DO_VOLUME_MINIO&gt;:/data:ro \
+  -v /opt/inspecteam/backups:/backup \
+  alpine tar czf /backup/minio-$(date +%F-%H%M).tgz -C /data .
+docker compose -f compose.production.yaml start minio</code></pre></div>
+<ul class="check"><li>Mantenha cópias fora da VPS.</li><li>Criptografe backups que contenham dados pessoais.</li><li>Defina retenção e teste restauração periodicamente.</li><li>Monitore espaço em disco, RAM, certificados e falhas de login.</li></ul></section>
+
+<section class="section searchable" id="problemas"><div class="head"><span class="index">11 · diagnóstico</span><h2>Problemas comuns</h2></div><div class="table"><table><thead><tr><th>Sintoma</th><th>Verificação</th><th>Ação</th></tr></thead><tbody>
+<tr><td>API não inicia</td><td><code>journalctl -u inspecteam-api -n 200</code></td><td>Confira Java 21, env, banco e tamanho do JWT secret.</td></tr>
+<tr><td>Flyway falha</td><td>Log da API e tabela <code>flyway_schema_history</code></td><td>Não edite migração aplicada; corrija com uma nova versão.</td></tr>
+<tr><td>Teste é ignorado</td><td><code>docker info</code></td><td>Inicie Docker; Testcontainers é desabilitado sem ele.</td></tr>
+<tr><td>502 no Nginx</td><td><code>systemctl status inspecteam-api inspecteam-web</code></td><td>Confirme processos e portas loopback.</td></tr>
+<tr><td>Upload retorna 403</td><td>Host da URL pré-assinada</td><td>Alinhe <code>STORAGE_ENDPOINT</code>, DNS, HTTPS e header Host.</td></tr>
+<tr><td>Upload retorna 413</td><td>Limite Nginx</td><td>Mantenha <code>client_max_body_size 20m</code>.</td></tr>
+<tr><td>401 em rota protegida</td><td>Header e expiração</td><td>Envie Bearer token válido ou use refresh.</td></tr>
+<tr><td>403 entre tenants</td><td>Membership e grants</td><td>É esperado sem vínculo/permissão; não desative RLS.</td></tr>
+<tr><td>Certificado não emite</td><td>DNS A e portas 80/443</td><td>Aguarde propagação e valide o firewall Hostinger/UFW.</td></tr>
+<tr><td>Disco cheio</td><td><code>df -h</code> e <code>docker system df</code></td><td>Revise logs, releases, imagens e política de retenção.</td></tr></tbody></table></div>
+<div class="codebox"><div class="codebar">Diagnóstico rápido<button class="copy">Copiar</button></div><pre><code>sudo nginx -t
+sudo systemctl --failed
+sudo ss -lntp
+curl http://127.0.0.1:8080/actuator/health
+curl -I http://127.0.0.1:3000
+sudo ufw status
+df -h</code></pre></div></section>
+<section class="section searchable" id="fontes"><div class="head"><span class="index">12 · referências</span><h2>Fontes oficiais</h2><p class="lead">Consulte estas fontes antes de upgrades, pois versões e procedimentos podem mudar.</p></div><div class="grid two">
+<a class="card" href="https://www.hostinger.com/tutorials/how-to-set-up-vps" target="_blank" rel="noreferrer"><span class="kicker">Hostinger</span><h3>Configurar VPS</h3><p>Provisionamento, SSH e firewall no hPanel.</p></a>
+<a class="card" href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noreferrer"><span class="kicker">Docker</span><h3>Engine no Ubuntu</h3><p>Repositório oficial e Compose plugin.</p></a>
+<a class="card" href="https://certbot.eff.org/instructions?ws=nginx&amp;os=snap" target="_blank" rel="noreferrer"><span class="kicker">Certbot / EFF</span><h3>HTTPS com Nginx</h3><p>Emissão e renovação automática.</p></a>
+<a class="card" href="https://nodejs.org/en/download/archive/v22" target="_blank" rel="noreferrer"><span class="kicker">Node.js</span><h3>Node.js 22</h3><p>Binários e histórico da linha usada.</p></a>
+<a class="card" href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html" target="_blank" rel="noreferrer"><span class="kicker">Nginx</span><h3>Proxy HTTP</h3><p>Diretivas oficiais do proxy reverso.</p></a>
+<a class="card" href="https://docs.spring.io/spring-boot/how-to/data-initialization.html" target="_blank" rel="noreferrer"><span class="kicker">Spring Boot</span><h3>Flyway</h3><p>Inicialização e migrações do banco.</p></a></div></section>
+<div class="noresults" id="noresults"><b>Nenhum resultado encontrado.</b><br>Tente outro módulo, endpoint ou tecnologia.</div>
+<footer>InspecTeam · Documento gerado a partir do código-fonte local · Atualizado em 18 de julho de 2026.<br>Domínios, IPs, usuários e segredos dos exemplos são placeholders.</footer></main></div>
+<script>
+(function(){
+var root=document.documentElement,saved=localStorage.getItem("it-doc-theme"),dark=matchMedia("(prefers-color-scheme:dark)").matches;root.dataset.theme=saved||(dark?"dark":"light");
+document.getElementById("theme").onclick=function(){root.dataset.theme=root.dataset.theme==="dark"?"light":"dark";localStorage.setItem("it-doc-theme",root.dataset.theme)};
+var menu=document.getElementById("menu");function close(){document.body.classList.remove("nav-open");menu.setAttribute("aria-expanded","false")}menu.onclick=function(){var open=document.body.classList.toggle("nav-open");menu.setAttribute("aria-expanded",String(open))};document.getElementById("overlay").onclick=close;document.querySelectorAll(".nav").forEach(function(a){a.onclick=close});
+function copied(b){var old=b.textContent;b.textContent="Copiado ✓";setTimeout(function(){b.textContent=old},1300)}
+function copyText(t,b){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){copied(b)});return}var area=document.createElement("textarea");area.value=t;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();copied(b)}
+document.querySelectorAll(".copy").forEach(function(b){b.onclick=function(){copyText(b.closest(".codebox").querySelector("code").innerText,b)}});
+document.querySelectorAll('[role="tablist"]').forEach(function(list){list.querySelectorAll('[role="tab"]').forEach(function(tab){tab.onclick=function(){list.querySelectorAll('[role="tab"]').forEach(function(item){item.setAttribute("aria-selected",item===tab);var panel=document.getElementById(item.dataset.panel);if(panel)panel.hidden=item!==tab})}})});
+var input=document.getElementById("search"),items=Array.from(document.querySelectorAll(".searchable"));input.oninput=function(){var q=input.value.trim().toLocaleLowerCase("pt-BR"),n=0;items.forEach(function(s){var show=!q||s.textContent.toLocaleLowerCase("pt-BR").includes(q);s.style.display=show?"":"none";if(show)n++});document.getElementById("noresults").style.display=n?"none":"block"};
+document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();input.focus()}if(e.key==="Escape"){input.blur();close()}});
+var links=Array.from(document.querySelectorAll(".nav")),sections=links.map(function(a){return document.querySelector(a.getAttribute("href"))}).filter(Boolean),obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)links.forEach(function(a){a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id)})})},{rootMargin:"-15% 0px -72% 0px"});sections.forEach(function(s){obs.observe(s)});
+})();
+</script>
+</body></html>

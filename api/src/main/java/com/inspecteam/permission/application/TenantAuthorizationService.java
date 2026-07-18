@@ -35,4 +35,18 @@ public class TenantAuthorizationService {
         }
         return membership;
     }
+
+    public Membership requireForm(UUID tenantId, UUID userId, boolean platformAdmin,
+            UUID formId, String permission) {
+        Membership membership = activate(tenantId, userId, platformAdmin);
+        if (platformAdmin || membership.owner()) {
+            return membership;
+        }
+        boolean allowed = tenants.hasPermission(tenantId, membership.id(), permission)
+                || tenants.hasFormPermission(tenantId, membership.id(), formId, permission);
+        if (!allowed) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "Permissão insuficiente para o formulário: " + permission);
+        }
+        return membership;
+    }
 }
