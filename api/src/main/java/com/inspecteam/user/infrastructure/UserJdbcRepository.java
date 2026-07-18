@@ -37,8 +37,8 @@ public class UserJdbcRepository {
     public UUID createUser(String email, String displayName, String passwordHash) {
         UUID id = UUID.randomUUID();
         jdbc.sql("""
-                INSERT INTO users (id, email, display_name, password_hash, status)
-                VALUES (:id, :email, :displayName, :passwordHash, 'ACTIVE')
+                INSERT INTO users (id, email, display_name, password_hash, status, must_change_password)
+                VALUES (:id, :email, :displayName, :passwordHash, 'ACTIVE', TRUE)
                 """).param("id", id).param("email", email.toLowerCase()).param("displayName", displayName)
                 .param("passwordHash", passwordHash).update();
         return id;

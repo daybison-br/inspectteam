@@ -1,0 +1,3 @@
+"use client";/* eslint-disable @typescript-eslint/no-explicit-any */
+import {FormEvent,useEffect,useState} from "react";import {api,json} from "@/app/lib/api";
+export default function ProfileSettings(){const [me,setMe]=useState<any>();useEffect(()=>{api('me').then(setMe)},[]);async function save(e:FormEvent<HTMLFormElement>){e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget));const updated=await api('me',json('PATCH',d));setMe(updated);alert('Perfil atualizado')}return <form className="panel" onSubmit={save}><h2>Seu perfil</h2><label>Nome<input name="displayName" defaultValue={me?.displayName??''} required/></label><label>E-mail<input value={me?.email??''} disabled/></label><button className="primary">Salvar perfil</button></form>}

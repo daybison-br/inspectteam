@@ -14,7 +14,7 @@ A raiz contém:
 inspecTeam/
 ├── AGENTS/PROJECT_ANALYSIS.md
 ├── api/                 # API Spring Boot
-├── web/                 # protótipo web React/Vinext
+├── web/                 # aplicação web React/Vinext integrada
 ├── compose.yaml         # PostgreSQL e MinIO locais
 └── .env.example         # variáveis de ambiente de exemplo
 ```
@@ -33,7 +33,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - API HTTP com Spring MVC;
 - Spring Security com JWT HMAC;
 - Spring JDBC e PostgreSQL 18;
-- Flyway com nove migrações;
+- Flyway com onze migrações;
 - MinIO para armazenamento de fotos e assinaturas;
 - Testcontainers com PostgreSQL real nos testes;
 - empacotamento JAR.
@@ -45,7 +45,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - TypeScript 5.9.3;
 - Node.js 22.13 ou superior.
 
-O aplicativo React atual é um protótipo interativo do construtor de formulários. Ele ainda não consome a API.
+O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global.
 
 ## Arquitetura do backend
 
@@ -125,7 +125,9 @@ As migrações em `api/src/main/resources/db/migration` são:
 6. metadados de arquivos;
 7. dispositivos e controle de sincronização;
 8. eventos de auditoria;
-9. políticas de Row-Level Security.
+9. políticas de Row-Level Security;
+10. expansão da gestão web, senha temporária e membership administrativa;
+11. auditoria global da plataforma.
 
 O Hibernate está configurado apenas para validar o esquema. A evolução estrutural do banco deve ocorrer exclusivamente por novas migrações Flyway; migrações existentes não devem ser reescritas após serem compartilhadas.
 
@@ -188,10 +190,10 @@ Portas locais padrão: API `8080`, PostgreSQL `5432`, web `3000`, MinIO API `900
 
 O backend foi validado com `.\mvnw.cmd test`.
 
-- 2 testes executados;
+- 3 testes executados;
 - 0 falhas e 0 erros;
 - PostgreSQL 18 iniciado por Testcontainers;
-- nove migrações Flyway aplicadas;
+- onze migrações Flyway aplicadas;
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
 
@@ -201,25 +203,18 @@ O frontend foi validado com `npm run build`, concluído sem erro.
 
 Ainda não estão implementados:
 
-1. integração do frontend com autenticação e endpoints reais;
-2. aplicativo React Native e armazenamento offline no dispositivo;
-3. resolução avançada de conflitos de sincronização e fila de uploads offline;
-4. convite por e-mail, expiração de convite e troca obrigatória da senha temporária;
-5. painel global completo para o administrador da plataforma — a leitura global existe no modelo de segurança, mas mutações administrativas entre tenants ainda exigem um fluxo explícito de suporte/impersonação;
-6. OpenAPI/Swagger e exemplos formais dos contratos;
-7. recuperação de senha, MFA, rate limiting e gestão/rotação de segredos;
-8. testes de isolamento RLS entre dois tenants, autorização negativa, uploads MinIO e concorrência de sincronização;
-9. observabilidade de produção, CI/CD, backups e implantação;
-10. políticas operacionais de LGPD, retenção, exportação e exclusão de dados.
+1. aplicativo React Native e armazenamento offline no dispositivo;
+2. recuperação de senha, MFA e rate limiting;
+3. convite por e-mail e expiração automática de convite;
+4. exportação de respostas, OpenAPI/Swagger e CI/CD;
+5. observabilidade, políticas LGPD e automação de backups de produção.
 
 ## Ordem recomendada para retomar
 
-1. criar testes de segurança provando que um tenant não lê ou altera dados de outro;
-2. conectar o painel web ao cadastro/login e à listagem real de formulários;
-3. implementar no frontend o editor persistido de drafts e a publicação;
-4. formalizar OpenAPI e os contratos usados posteriormente pelo React Native;
-5. projetar o banco local e o protocolo de conflitos do aplicativo offline antes de iniciar o mobile.
-
+1. ampliar os testes negativos de autorização e isolamento RLS;
+2. formalizar OpenAPI para o cliente mobile;
+3. projetar o banco local e os conflitos do aplicativo offline;
+4. implementar recuperação de senha e MFA.
 ## Observações
 
 - A aplicação usa PostgreSQL, não H2, inclusive no teste de integração.

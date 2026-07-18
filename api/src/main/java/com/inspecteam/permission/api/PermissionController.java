@@ -5,7 +5,7 @@ import com.inspecteam.permission.infrastructure.PermissionJdbcRepository.RoleVie
 import com.inspecteam.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -72,7 +72,7 @@ public class PermissionController {
     record CreateRoleRequest(@NotBlank @Size(max = 100) String name, @Size(max = 240) String description) {
     }
 
-    record SetPermissionsRequest(@NotEmpty List<@NotBlank String> permissions) {
+    record SetPermissionsRequest(@NotNull List<@NotBlank String> permissions) {
     }
 
     record FormGrantRequest(UUID membershipId, UUID roleId, @NotNull String permission) {

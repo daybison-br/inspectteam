@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFile} from "node:fs/promises";
+const read=(file)=>readFile(new URL(`../${file}`,import.meta.url),"utf8");
+test("aplicação expõe autenticação e áreas funcionais",async()=>{const workspace=await read("app/components/Workspace.tsx");const auth=await read("app/components/AuthForm.tsx");for(const label of ["Formulários","Respostas","Equipe","Acessos","Configurações","Administração global"])assert.match(workspace,new RegExp(label));assert.match(auth,/gateway\/auth/);});
+test("sessão mantém tokens em cookies protegidos",async()=>{const session=await read("app/lib/server-session.ts");assert.match(session,/httpOnly: true/);assert.match(session,/sameSite: "lax"/);assert.doesNotMatch(await read("app/components/Workspace.tsx"),/localStorage\.setItem\([^,]*token/i);});
+test("construtor suporta todos os tipos validados pela API",async()=>{const editor=await read("app/components/FormEditor.tsx");for(const type of ["text","textarea","number","date","time","select","multiselect","checkbox","photo","signature","heading","instructions"])assert.match(editor,new RegExp(`['\"]${type}['\"]`));});
