@@ -1,0 +1,7 @@
+spring:
+  jpa:
+    show-sql: false
+
+inspecteam:
+  security:
+    jwt-secret: test-secret-with-at-least-thirty-two-characters
