@@ -45,7 +45,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - TypeScript 5.9.3;
 - Node.js 22.13 ou superior.
 
-O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha.
+O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha. A interface possui um Design System interno baseado em tokens semânticos, iconografia Fluent, temas claro e escuro, shell responsivo, tabelas corporativas, estados vazios, avisos e diálogos acessíveis. A auditoria do tenant pode ser consultada em `/app/auditoria`.
 
 ## Arquitetura do backend
 
@@ -197,7 +197,7 @@ O backend foi validado com `.\mvnw.cmd test`.
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
 
-O frontend foi validado com `npm run build`, concluído sem erro.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 5 testes aprovados e nenhum erro de lint.
 
 ## Limitações e próximos passos
 
