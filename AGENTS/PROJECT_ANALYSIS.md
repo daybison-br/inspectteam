@@ -45,7 +45,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - TypeScript 5.9.3;
 - Node.js 22.13 ou superior.
 
-O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha. A interface possui um Design System interno baseado em tokens semânticos, iconografia Fluent, temas claro e escuro, shell responsivo, tabelas corporativas, estados vazios, avisos e diálogos acessíveis. A auditoria do tenant pode ser consultada em `/app/auditoria`.
+O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações, perfil pessoal em `/app/perfil` e administração global. O avatar no cabeçalho abre um menu de conta com acesso ao perfil e logout; dados pessoais não ficam mais misturados às configurações do tenant. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha. A interface possui um Design System interno baseado em tokens semânticos, iconografia Fluent, temas claro e escuro, shell responsivo, tabelas corporativas, estados vazios, avisos e diálogos acessíveis. A auditoria do tenant pode ser consultada em `/app/auditoria`.
 
 ## Arquitetura do backend
 
@@ -197,7 +197,7 @@ O backend foi validado com `.\mvnw.cmd test`.
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
 
-O frontend foi validado com `npm test` e `npm run lint`: build concluído, 8 testes aprovados e nenhum erro de lint.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 9 testes aprovados e nenhum erro de lint.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
 
