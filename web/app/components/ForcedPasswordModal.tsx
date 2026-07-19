@@ -1,0 +1,54 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+import { ApiError, api, json } from "@/app/lib/api";
+
+export default function ForcedPasswordModal({ onChanged }: { onChanged: () => void }) {
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
+    if (values.newPassword !== values.confirmPassword) {
+      setError("A confirmação não corresponde à nova senha.");
+      return;
+    }
+    if (values.currentPassword === values.newPassword) {
+      setError("A nova senha deve ser diferente da senha temporária.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      await api("me/password", json("POST", {
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      }));
+      form.reset();
+      onChanged();
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : "Não foi possível alterar a senha.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return <div className="modal-backdrop forced-password-backdrop">
+    <form className="modal small forced-password-modal" role="dialog" aria-modal="true" aria-labelledby="forced-password-title" onSubmit={submit}>
+      <div className="security-symbol" aria-hidden="true">✓</div>
+      <div>
+        <span className="kicker">PRIMEIRO ACESSO</span>
+        <h2 id="forced-password-title">Proteja sua conta</h2>
+        <p>Você entrou com uma senha temporária. Defina uma nova senha para continuar usando o InspecTeam.</p>
+      </div>
+      <label>Senha temporária<input name="currentPassword" type="password" autoComplete="current-password" required autoFocus /></label>
+      <label>Nova senha<input name="newPassword" type="password" autoComplete="new-password" minLength={10} maxLength={128} required /><small>Use pelo menos 10 caracteres.</small></label>
+      <label>Confirmar nova senha<input name="confirmPassword" type="password" autoComplete="new-password" minLength={10} maxLength={128} required /></label>
+      {error && <div className="alert error" role="alert">{error}</div>}
+      <button className="primary wide" disabled={busy}>{busy ? "Alterando senha..." : "Alterar senha e continuar"}</button>
+      <p className="forced-note">Por segurança, este aviso não pode ser fechado.</p>
+    </form>
+  </div>;
+}

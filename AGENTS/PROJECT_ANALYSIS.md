@@ -45,7 +45,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - TypeScript 5.9.3;
 - Node.js 22.13 ou superior.
 
-O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global.
+O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações e administração global. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha.
 
 ## Arquitetura do backend
 
@@ -190,7 +190,7 @@ Portas locais padrão: API `8080`, PostgreSQL `5432`, web `3000`, MinIO API `900
 
 O backend foi validado com `.\mvnw.cmd test`.
 
-- 3 testes executados;
+- 4 testes executados;
 - 0 falhas e 0 erros;
 - PostgreSQL 18 iniciado por Testcontainers;
 - onze migrações Flyway aplicadas;
