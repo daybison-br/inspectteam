@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Este documento registra o estado observado em 18 de julho de 2026 e é o ponto de retomada do projeto. As funcionalidades descritas como implementadas existem nos arquivos atuais. A seção de pendências contém recomendações, não funcionalidades prontas.
+Este documento registra o estado observado em 19 de julho de 2026 e é o ponto de retomada do projeto. As funcionalidades descritas como implementadas existem nos arquivos atuais. A seção de pendências contém recomendações, não funcionalidades prontas.
 
 ## Visão geral
 
@@ -15,11 +15,13 @@ inspecTeam/
 ├── AGENTS/PROJECT_ANALYSIS.md
 ├── api/                 # API Spring Boot
 ├── web/                 # aplicação web React/Vinext integrada
+├── mobile/              # aplicativo React Native/Expo offline-first
+├── docs/index.html      # documentação técnica e operacional
 ├── compose.yaml         # PostgreSQL e MinIO locais
 └── .env.example         # variáveis de ambiente de exemplo
 ```
 
-Existe um repositório Git inicializado na raiz. Artefatos gerados, como `api/target`, `web/node_modules`, `web/dist` e `web/.vinext`, não são código-fonte e não devem ser versionados.
+Existe um repositório Git inicializado na raiz. Artefatos gerados, como `api/target`, `web/node_modules`, `web/dist` e `web/.vinext`, `mobile/node_modules`, `mobile/.expo` e `mobile/dist`, não são código-fonte e não devem ser versionados.
 
 O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keystores, configurações com segredos, backups, logs, dependências e artefatos de build. O arquivo `.env.example` permanece versionável por conter apenas placeholders.
 
@@ -46,6 +48,20 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - Node.js 22.13 ou superior.
 
 O aplicativo React é um painel multi-rotas integrado à API por um gateway de sessão com cookies HttpOnly. Possui login, cadastro, gestão do tenant, editor persistido, respostas, equipe, acessos, configurações, perfil pessoal em `/app/perfil` e administração global. A identificação do usuário aparece somente no cabeçalho: o avatar abre um menu de conta com acesso ao perfil e logout. Nome e cargo não são repetidos na navegação lateral, e dados pessoais não ficam misturados às configurações do tenant. Usuários criados com senha temporária recebem um modal bloqueante imediatamente após o login e só acessam a aplicação depois de redefinir a senha. A interface possui um Design System interno baseado em tokens semânticos, iconografia Fluent, temas claro e escuro, shell responsivo, tabelas corporativas, estados vazios, avisos e diálogos acessíveis. A auditoria do tenant pode ser consultada em `/app/auditoria`.
+
+### Mobile
+
+- TypeScript 6.0;
+- React Native 0.86 e React 19.2;
+- Expo SDK 57 e Expo Router;
+- SQLite local acessado por Expo SQLite e Drizzle ORM;
+- SQLCipher habilitado no development build;
+- Expo SecureStore para refresh token, identificador do dispositivo e chave do banco;
+- Image Picker, File System, SVG e View Shot para fotos e assinaturas;
+- Expo Background Task para tentativas oportunistas de sincronização;
+- EAS configurado para perfis development, preview e production.
+
+O módulo `mobile/` é um MVP Android-first offline-first. Ele autentica na API, exige a troca da senha temporária antes de liberar a navegação, mantém tenant e formulários publicados no banco criptografado, salva rascunhos automaticamente, executa os doze tipos de campo, persiste fotos e assinaturas, enfileira anexos e mutações e sincroniza quando há conexão. O access token fica em memória e o refresh token fica no armazenamento seguro do sistema.
 
 ## Arquitetura do backend
 
@@ -118,6 +134,9 @@ O tenant ativo é definido localmente na transação com `set_config`. As tabela
 - registro de dispositivos;
 - sincronização pull de formulários publicados e tombstones;
 - sincronização push idempotente com `mutationId`;
+- processamento transacional independente por mutação, retornando `APPLIED`, `ALREADY_APPLIED`, `CONFLICT` ou `REJECTED` sem abortar o lote;
+- atualização de atividade do dispositivo no pull e no push;
+- aplicativo mobile com catálogo local, rascunho automático, fila de anexos e respostas, fotografia, assinatura e sincronização manual ou oportunista em segundo plano;
 - mutações `CREATE`, `UPDATE` e `COMPLETE`;
 - auditoria das principais operações administrativas e operacionais.
 
@@ -199,7 +218,7 @@ Portas locais padrão: API `8080`, PostgreSQL `5432`, web `3000`, MinIO API `900
 
 O backend foi validado com `.\mvnw.cmd test`.
 
-- 4 testes executados;
+- 5 testes executados;
 - 0 falhas e 0 erros;
 - PostgreSQL 18 iniciado por Testcontainers;
 - doze migrações Flyway aplicadas;
@@ -207,6 +226,8 @@ O backend foi validado com `.\mvnw.cmd test`.
 - fluxo integrado aprovado: cadastro do proprietário, criação/publicação e consulta web do formulário, registro de dispositivo, pull de sincronização, criação/conclusão da resposta e exclusão lógica com preservação do histórico.
 
 O frontend foi validado com `npm test` e `npm run lint`: build concluído, 14 testes aprovados e nenhum erro de lint.
+
+O mobile foi validado com `npm test`, `npm run typecheck`, `npm run lint`, `npx expo install --check` e export Android. Dois testes unitários foram aprovados, as dependências estão compatíveis com o Expo SDK 57 e o bundle Hermes foi gerado sem erro.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
 
@@ -218,7 +239,7 @@ O `web/vite.config.ts` usa um logger específico para ignorar somente sourcemaps
 
 Ainda não estão implementados:
 
-1. aplicativo React Native e armazenamento offline no dispositivo;
+1. testes do aplicativo em aparelhos físicos, jornadas E2E e publicação Android/iOS;
 2. recuperação de senha, MFA e rate limiting;
 3. convite por e-mail e expiração automática de convite;
 4. exportação de respostas, OpenAPI/Swagger e CI/CD;
@@ -227,13 +248,14 @@ Ainda não estão implementados:
 ## Ordem recomendada para retomar
 
 1. ampliar os testes negativos de autorização e isolamento RLS;
-2. formalizar OpenAPI para o cliente mobile;
-3. projetar o banco local e os conflitos do aplicativo offline;
+2. formalizar OpenAPI para os clientes web e mobile;
+3. implementar resolução assistida de conflitos e política de retenção do banco local;
 4. implementar recuperação de senha e MFA.
+
 ## Observações
 
 - A aplicação usa PostgreSQL, não H2, inclusive no teste de integração.
-- `target/`, `node_modules/`, `dist/` e `.vinext/` são descartáveis.
+- `target/`, `node_modules/`, `dist/`, `.vinext/` e `.expo/` são descartáveis.
 - O aviso do Mockito sobre carregamento dinâmico do agente não falha o build, mas deve ser acompanhado em atualizações futuras do Java.
 - O validador de formulários utiliza uma API marcada como deprecated pelo compilador; o build passa, mas a chamada deve ser atualizada em uma manutenção futura.
 - O MinIO está adequado ao ambiente local atual; a escolha de armazenamento de produção deve ser reavaliada antes da implantação.

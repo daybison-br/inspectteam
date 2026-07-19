@@ -104,4 +104,50 @@ class InspecTeamApplicationTests {
         assertThat(submissionService.list(registration.tenantId(), registration.userId(), false, formId))
                 .singleElement().extracting(item -> item.status()).isEqualTo("COMPLETED");
     }
+
+    @Test
+    void syncProcessesConflictsWithoutDiscardingValidMutations() throws Exception {
+        String suffix = UUID.randomUUID().toString().substring(0, 8);
+        var registration = authService.registerTenant(new AuthService.RegisterTenantCommand(
+                "Tenant Sync", "sync-" + suffix, "Proprietário",
+                "sync-" + suffix + "@example.com", "strong-password-123", "integration-test"));
+        var definition = objectMapper.readTree("""
+                {"sections":[{"id":"main","fields":[
+                  {"id":"note","type":"text","label":"Observação","required":true}
+                ]}]}
+                """);
+        UUID formId = formService.create(registration.tenantId(), registration.userId(), false,
+                "Checklist offline", "Teste da fila", definition);
+        formService.publish(registration.tenantId(), formId, registration.userId(), false);
+        UUID deviceId = UUID.randomUUID();
+        syncService.registerDevice(registration.tenantId(), registration.userId(), false,
+                deviceId, "Android test", "ANDROID");
+        var pull = syncService.pull(registration.tenantId(), registration.userId(), false, 0, deviceId);
+        UUID submissionId = UUID.randomUUID();
+        UUID createMutationId = UUID.randomUUID();
+        var create = new SyncService.Mutation(createMutationId, "CREATE", submissionId, formId,
+                pull.forms().getFirst().versionId(), 0,
+                objectMapper.createObjectNode().put("note", "offline"), java.time.Instant.now());
+
+        assertThat(syncService.push(registration.tenantId(), registration.userId(), false,
+                deviceId, java.util.List.of(create))).singleElement()
+                .extracting(SyncService.MutationResult::status).isEqualTo("APPLIED");
+        assertThat(syncService.push(registration.tenantId(), registration.userId(), false,
+                deviceId, java.util.List.of(create))).singleElement()
+                .extracting(SyncService.MutationResult::status).isEqualTo("ALREADY_APPLIED");
+
+        var conflict = new SyncService.Mutation(UUID.randomUUID(), "UPDATE", submissionId, formId,
+                pull.forms().getFirst().versionId(), 99,
+                objectMapper.createObjectNode().put("note", "conflito"), java.time.Instant.now());
+        var complete = new SyncService.Mutation(UUID.randomUUID(), "COMPLETE", submissionId, formId,
+                pull.forms().getFirst().versionId(), 0,
+                objectMapper.createObjectNode().put("note", "offline"), java.time.Instant.now());
+        var results = syncService.push(registration.tenantId(), registration.userId(), false,
+                deviceId, java.util.List.of(conflict, complete));
+
+        assertThat(results).extracting(SyncService.MutationResult::status)
+                .containsExactly("CONFLICT", "APPLIED");
+        assertThat(submissionService.list(registration.tenantId(), registration.userId(), false, formId))
+                .singleElement().extracting(item -> item.status()).isEqualTo("COMPLETED");
+    }
 }

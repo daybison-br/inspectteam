@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "InspecTeam",
+    "slug": "inspecteam-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "inspecteam",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "icon": "./assets/images/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.inspecteam.mobile",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "O InspecTeam usa a câmera para registrar evidências nos checklists.",
+        "NSPhotoLibraryUsageDescription": "O InspecTeam acessa fotos escolhidas para anexá-las aos checklists."
+      }
+    },
+    "android": {
+      "package": "com.inspecteam.mobile",
+      "permissions": [
+        "CAMERA"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#0B2637",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": true
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-sqlite",
+        {
+          "useSQLCipher": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permita que o InspecTeam selecione imagens para os checklists."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B2637",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 88
+        }
+      ],
+      "expo-background-task",
+      "@react-native-community/datetimepicker"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "apiUrl": "http://10.0.2.2:8080/api/v1"
+    }
+  }
+}

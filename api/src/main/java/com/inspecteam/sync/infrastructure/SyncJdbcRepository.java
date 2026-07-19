@@ -30,12 +30,19 @@ public class SyncJdbcRepository {
                 .param("name", name).param("platform", platform).update();
     }
 
-    public boolean mutationExists(UUID tenantId, UUID deviceId, UUID mutationId) {
+    public String mutationStatus(UUID tenantId, UUID deviceId, UUID mutationId) {
         return jdbc.sql("""
-                SELECT EXISTS (SELECT 1 FROM sync_mutations
-                 WHERE tenant_id = :tenantId AND device_id = :deviceId AND mutation_id = :mutationId)
+                SELECT status FROM sync_mutations
+                 WHERE tenant_id = :tenantId AND device_id = :deviceId AND mutation_id = :mutationId
                 """).param("tenantId", tenantId).param("deviceId", deviceId).param("mutationId", mutationId)
-                .query(Boolean.class).single();
+                .query(String.class).optional().orElse(null);
+    }
+
+    public void touchDevice(UUID tenantId, UUID deviceId) {
+        jdbc.sql("""
+                UPDATE devices SET last_seen_at = NOW()
+                 WHERE tenant_id = :tenantId AND id = :deviceId AND revoked_at IS NULL
+                """).param("tenantId", tenantId).param("deviceId", deviceId).update();
     }
 
     public boolean deviceBelongsTo(UUID tenantId, UUID deviceId, UUID membershipId) {
@@ -48,13 +55,14 @@ public class SyncJdbcRepository {
     }
 
     public void recordMutation(UUID tenantId, UUID deviceId, UUID mutationId,
-            UUID entityId, String operation) {
+            UUID entityId, String operation, String status) {
         jdbc.sql("""
                 INSERT INTO sync_mutations
                     (tenant_id, device_id, mutation_id, entity_type, entity_id, operation, status)
-                VALUES (:tenantId, :deviceId, :mutationId, 'SUBMISSION', :entityId, :operation, 'APPLIED')
+                VALUES (:tenantId, :deviceId, :mutationId, 'SUBMISSION', :entityId, :operation, :status)
+                ON CONFLICT (tenant_id, device_id, mutation_id) DO NOTHING
                 """).param("tenantId", tenantId).param("deviceId", deviceId).param("mutationId", mutationId)
-                .param("entityId", entityId).param("operation", operation).update();
+                .param("entityId", entityId).param("operation", operation).param("status", status).update();
     }
 
     public List<PublishedForm> findPublishedForms(UUID tenantId, UUID membershipId, boolean owner) {

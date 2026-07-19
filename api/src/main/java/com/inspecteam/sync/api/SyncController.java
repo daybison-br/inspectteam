@@ -47,9 +47,9 @@ public class SyncController {
 
     @GetMapping("/pull")
     PullResult pull(@PathVariable UUID tenantId, @RequestParam(defaultValue = "0") @PositiveOrZero long cursor,
-            Authentication authentication) {
+            @RequestParam(required = false) UUID deviceId, Authentication authentication) {
         return service.pull(tenantId, CurrentUser.id(authentication),
-                CurrentUser.isPlatformAdmin(authentication), cursor);
+                CurrentUser.isPlatformAdmin(authentication), cursor, deviceId);
     }
 
     @PostMapping("/push")
