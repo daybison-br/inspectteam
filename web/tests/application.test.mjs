@@ -45,3 +45,13 @@ test("editor de opções usa lista acessível com inclusão, ordenação e valid
  assert.match(options,/normalize\("NFD"\)/);
  assert.match(options,/Adicione pelo menos duas opções/);
 });
+test("menu do construtor diferencia visualmente cada tipo de campo",async()=>{
+ const editor=await read("app/components/FormEditor.tsx");
+ const design=await read("app/components/DesignSystem.tsx");
+ for(const icon of ["fieldText","fieldLongText","fieldNumber","fieldDate","fieldTime","fieldSelect","fieldMultiSelect","fieldCheckbox","fieldPhoto","fieldSignature","fieldHeading","fieldInstructions"]){
+  assert.match(editor,new RegExp("Icons\\."+icon));
+  assert.match(design,new RegExp(icon+":"));
+ }
+ assert.match(editor,/types\.map\(\(\[type,label,FieldIcon\]\)/);
+ assert.doesNotMatch(editor,/<Icons\.add\/>\{label\}/);
+});
