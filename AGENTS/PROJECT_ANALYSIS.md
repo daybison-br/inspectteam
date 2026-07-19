@@ -61,7 +61,7 @@ O aplicativo React é um painel multi-rotas integrado à API por um gateway de s
 - Expo Background Task para tentativas oportunistas de sincronização;
 - EAS configurado para perfis development, preview e production.
 
-O módulo `mobile/` é um MVP Android-first offline-first. Ele autentica na API, exige a troca da senha temporária antes de liberar a navegação, mantém tenant e formulários publicados no banco criptografado, salva rascunhos automaticamente, executa os doze tipos de campo, persiste fotos e assinaturas, enfileira anexos e mutações e sincroniza quando há conexão. O access token fica em memória e o refresh token fica no armazenamento seguro do sistema.
+O módulo `mobile/` é um MVP Android-first offline-first. A tela de login usa redimensionamento nativo da janela, área segura e rolagem ajustada ao teclado para manter os campos visíveis. Ele autentica na API, exige a troca da senha temporária antes de liberar a navegação, mantém tenant e formulários publicados no banco criptografado, salva rascunhos automaticamente, executa os doze tipos de campo, persiste fotos e assinaturas, enfileira anexos e mutações e sincroniza quando há conexão. O access token fica em memória e o refresh token fica no armazenamento seguro do sistema.
 
 ## Arquitetura do backend
 
