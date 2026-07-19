@@ -65,6 +65,7 @@ Toda tela nova ou alterada deve usar o InspecTeam Design System e manter uma lin
 
 - Uma função passada ao `useEffect` só pode retornar `undefined` ou uma função de limpeza. Nunca passar diretamente uma função que retorna `Promise` (`useEffect(load, ...)`) e nunca usar `useEffect(async () => ...)`; envolver com `useEffect(() => { void load(); }, [...])`.
 - Toda nova rota deve permanecer utilizável quando uma requisição falhar e deve oferecer mensagem compreensível e tentativa de recuperação.
+- Em Route Handlers do Vinext/Next, tratar `cookies()` e `headers()` de `next/headers`, além de respostas recebidas por `fetch`, como somente leitura. Cookies de sessão devem ser emitidos em uma nova `Response`, usando uma nova instância de `Headers`; nunca alterar headers de uma resposta upstream nem usar `cookies().set/delete` nesse gateway.
 - Antes de concluir alterações de frontend, executar build, lint, testes e pesquisar regressões de efeitos assíncronos, `alert`, `confirm`, erros de console e controles sem nome acessível.
 
 ### Fontes oficiais de referência

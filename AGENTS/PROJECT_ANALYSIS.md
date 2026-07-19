@@ -197,9 +197,11 @@ O backend foi validado com `.\mvnw.cmd test`.
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
 
-O frontend foi validado com `npm test` e `npm run lint`: build concluído, 7 testes aprovados e nenhum erro de lint.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 8 testes aprovados e nenhum erro de lint.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
+
+O gateway de sessão lê os cookies recebidos como dados imutáveis e sempre devolve uma nova `Response` com `Headers` mutáveis. Login, cadastro, renovação e logout preservam os dois cabeçalhos `Set-Cookie`; access e refresh tokens continuam `HttpOnly`, `SameSite=Lax`, com expiração explícita e `Secure` em produção. Essa regra evita o erro `Can't modify immutable headers` observado no runtime Vinext.
 
 O `web/vite.config.ts` usa um logger específico para ignorar somente sourcemaps inválidos publicados por `@griffel`; warnings do código da aplicação e de outras dependências continuam ativos.
 

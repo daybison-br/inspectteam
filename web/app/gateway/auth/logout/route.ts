@@ -1,2 +1,2 @@
-import { clearSession, verifyOrigin } from "@/app/lib/server-session";
-export async function POST(request: Request) { if (!(await verifyOrigin(request))) return new Response("Origem inválida", { status: 403 }); await clearSession(); return new Response(null, { status: 204 }); }
+import {clearSession,verifyOrigin} from "@/app/lib/server-session";
+export async function POST(request:Request){if(!(await verifyOrigin(request)))return new Response("Origem inválida",{status:403});return clearSession()}
