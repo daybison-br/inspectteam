@@ -100,6 +100,7 @@ O tenant ativo é definido localmente na transação com `set_config`. As tabela
 - publicação de versão imutável;
 - criação automática do próximo rascunho;
 - campos suportados: texto, texto longo, número, data, hora, seleção, multisseleção, checkbox, foto, assinatura, título e instruções;
+- editor de seleção simples e múltipla com opções individuais, inclusão por botão ou Enter, ordenação, remoção, foco gerenciado e validação de vazio, duplicidade e quantidade mínima;
 - listagem operacional com ações minimalistas por ícone para utilizar, editar, arquivar, restaurar e excluir;
 - preenchimento de formulários publicados diretamente na web, incluindo validação obrigatória, fotos e assinatura desenhada ou registrada por teclado, com upload pré-assinado;
 - exclusão lógica de formulários com deleted = true, autoria/data, auditoria e tombstone, preservando versões e respostas.
@@ -201,7 +202,7 @@ O backend foi validado com `.\mvnw.cmd test`.
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação/publicação e consulta web do formulário, registro de dispositivo, pull de sincronização, criação/conclusão da resposta e exclusão lógica com preservação do histórico.
 
-O frontend foi validado com `npm test` e `npm run lint`: build concluído, 10 testes aprovados e nenhum erro de lint.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 11 testes aprovados e nenhum erro de lint.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
 

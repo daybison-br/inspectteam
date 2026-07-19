@@ -26,3 +26,22 @@ test("formulários publicados podem ser preenchidos na web e excluídos logicame
  assert.match(runner,/Alternativa por teclado/);
  assert.match(runner,/assinatura\.png/);
 });
+
+test("editor de opções usa lista acessível com inclusão, ordenação e validação",async()=>{
+ const editor=await read("app/components/FormEditor.tsx");
+ const options=await read("app/components/OptionsEditor.tsx");
+ assert.match(editor,/OptionsEditor/);
+ assert.doesNotMatch(editor,/<label>Opções<textarea/);
+ assert.match(editor,/requestPublish/);
+ assert.match(editor,/validateChoiceOptions/);
+ assert.match(editor,/item\.type==="select"\?<select/);
+ assert.match(editor,/item\.type==="multiselect"\?<select multiple/);
+ assert.match(options,/Adicionar opção/);
+ assert.match(options,/event\.key==="Enter"/);
+ assert.match(options,/event\.key==="Backspace"/);
+ assert.match(options,/Mover opção/);
+ assert.match(options,/Remover opção/);
+ assert.match(options,/aria-live="polite"/);
+ assert.match(options,/normalize\("NFD"\)/);
+ assert.match(options,/Adicione pelo menos duas opções/);
+});
