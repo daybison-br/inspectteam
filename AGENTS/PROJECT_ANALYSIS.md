@@ -104,7 +104,9 @@ O tenant ativo é definido localmente na transação com `set_config`. As tabela
 - paleta de tipos do construtor com ícones Fluent específicos para texto, número, data, hora, seleções, checkbox, foto, assinatura, título e instruções;
 - composição contextual por seção ativa: campos são incluídos na seção selecionada, novas seções são criadas pelo cartão tracejado ao final e podem ser reordenadas por controles acessíveis;
 - listagem operacional com ações minimalistas por ícone para utilizar, editar, arquivar, restaurar e excluir;
-- preenchimento de formulários publicados diretamente na web, incluindo validação obrigatória, fotos e assinatura desenhada ou registrada por teclado, com upload pré-assinado;
+- preenchimento web guiado por seções, com progresso, navegação anterior/próxima, revisão final, foco no primeiro erro e estados de envio;
+- captura de fotos com área personalizada, câmera/seletor, arrastar e soltar, pré-visualização, validação de imagem e 20 MB, substituição e remoção; multisseleção em opções marcáveis e assinatura com retorno visual;
+- nova tentativa de envio preserva a submissão criada e reutiliza anexos já enviados para evitar duplicidade após falhas intermediárias;
 - exclusão lógica de formulários com deleted = true, autoria/data, auditoria e tombstone, preservando versões e respostas.
 
 ### Respostas, arquivos e offline
@@ -204,7 +206,7 @@ O backend foi validado com `.\mvnw.cmd test`.
 - contexto Spring carregado;
 - fluxo integrado aprovado: cadastro do proprietário, criação/publicação e consulta web do formulário, registro de dispositivo, pull de sincronização, criação/conclusão da resposta e exclusão lógica com preservação do histórico.
 
-O frontend foi validado com `npm test` e `npm run lint`: build concluído, 13 testes aprovados e nenhum erro de lint.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 14 testes aprovados e nenhum erro de lint.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
 

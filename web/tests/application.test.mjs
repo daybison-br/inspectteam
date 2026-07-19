@@ -72,3 +72,22 @@ test("construtor cria, seleciona e reorganiza seções de forma acessível",asyn
  assert.match(styles,/\.section-card\.active/);
  assert.match(styles,/width:44px;min-height:44px/);
 });
+test("preenchimento web usa etapas, revisão e captura profissional de foto",async()=>{
+ const runner=await read("app/components/FormRunner.tsx");
+ const styles=await read("app/styles/runner.css");
+ for(const behavior of ["sectionIndex","runner-progress","role=\"progressbar\"","continueForm","previousSection","Revise suas respostas","focusField","submitPhase"])assert.match(runner,new RegExp(behavior));
+ assert.match(runner,/className="runner-choice-group"/);
+ assert.match(runner,/className={"photo-capture/);
+ assert.match(runner,/capture="environment"/);
+ assert.match(runner,/accept="image\/\*"/);
+ assert.match(runner,/URL\.createObjectURL/);
+ assert.match(runner,/URL\.revokeObjectURL/);
+ assert.match(runner,/A imagem deve ter no máximo 20 MB/);
+ assert.match(runner,/Substituir foto/);
+ assert.match(runner,/uploadedFiles/);
+ assert.match(runner,/submissionCreated/);
+ assert.match(styles,/\.runner-hero/);
+ assert.match(styles,/\.photo-preview/);
+ assert.match(styles,/\.runner-review/);
+ assert.match(styles,/min-height:44px/);
+});
