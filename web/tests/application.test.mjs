@@ -55,3 +55,20 @@ test("menu do construtor diferencia visualmente cada tipo de campo",async()=>{
  assert.match(editor,/types\.map\(\(\[type,label,FieldIcon\]\)/);
  assert.doesNotMatch(editor,/<Icons\.add\/>\{label\}/);
 });
+test("construtor cria, seleciona e reorganiza seções de forma acessível",async()=>{
+ const editor=await read("app/components/FormEditor.tsx");
+ const styles=await read("app/styles/builder.css");
+ assert.match(editor,/activeSectionId/);
+ assert.match(editor,/function addSection/);
+ assert.match(editor,/function moveSection/);
+ assert.match(editor,/className="add-section-card"/);
+ assert.match(editor,/Adicionar campo em/);
+ assert.match(editor,/aria-live="polite"/);
+ assert.match(editor,/s\.id===targetId/);
+ assert.match(editor,/disabled=\{sectionIndex===0\}/);
+ assert.match(editor,/disabled=\{sectionIndex===sections\.length-1\}/);
+ assert.doesNotMatch(editor,/className="section-add"/);
+ assert.match(styles,/border:2px dashed/);
+ assert.match(styles,/\.section-card\.active/);
+ assert.match(styles,/width:44px;min-height:44px/);
+});
