@@ -46,10 +46,10 @@ public class ManagementService {
     public Dashboard dashboard(UUID tenantId, UUID userId, boolean admin) {
         authorization.activate(tenantId, userId, admin);
         return jdbc.sql("""
-                SELECT (SELECT COUNT(*) FROM forms WHERE tenant_id=:id AND status<>'ARCHIVED') forms,
+                SELECT (SELECT COUNT(*) FROM forms WHERE tenant_id=:id AND deleted=FALSE AND status<>'ARCHIVED') forms,
                   (SELECT COUNT(*) FROM submissions WHERE tenant_id=:id AND status='COMPLETED') submissions,
                   (SELECT COUNT(*) FROM tenant_memberships WHERE tenant_id=:id AND status='ACTIVE' AND membership_type<>'PLATFORM_ADMIN') members,
-                  (SELECT COUNT(*) FROM forms WHERE tenant_id=:id AND status='DRAFT') drafts
+                  (SELECT COUNT(*) FROM forms WHERE tenant_id=:id AND deleted=FALSE AND status='DRAFT') drafts
                 """).param("id", tenantId).query((rs,row)->new Dashboard(rs.getLong("forms"),rs.getLong("submissions"),
                         rs.getLong("members"),rs.getLong("drafts"))).single();
     }
@@ -68,7 +68,7 @@ public class ManagementService {
         return jdbc.sql("""
                 SELECT f.id,f.name,f.description,f.status,f.updated_at,v.id version_id,v.version_number,v.definition::text
                   FROM forms f JOIN form_versions v ON v.tenant_id=f.tenant_id AND v.form_id=f.id AND v.status='DRAFT'
-                 WHERE f.tenant_id=:tenantId AND f.id=:formId
+                 WHERE f.tenant_id=:tenantId AND f.id=:formId AND f.deleted=FALSE
                 """).param("tenantId",tenantId).param("formId",formId)
                 .query((rs,row)->new FormDetails(rs.getObject("id",UUID.class),rs.getString("name"),rs.getString("description"),
                         rs.getString("status"),rs.getObject("version_id",UUID.class),rs.getInt("version_number"),
@@ -79,7 +79,7 @@ public class ManagementService {
     @Transactional
     public void updateForm(UUID tenantId, UUID formId, UUID userId, boolean admin, String name, String description) {
         authorization.requireForm(tenantId,userId,admin,formId,"FORM_EDIT");
-        int changed=jdbc.sql("UPDATE forms SET name=:name,description=:description,updated_at=NOW() WHERE tenant_id=:tenantId AND id=:formId")
+        int changed=jdbc.sql("UPDATE forms SET name=:name,description=:description,updated_at=NOW() WHERE tenant_id=:tenantId AND id=:formId AND deleted=FALSE")
                 .param("name",name.trim()).param("description",description).param("tenantId",tenantId).param("formId",formId).update();
         if(changed==0) throw new ApiException(HttpStatus.NOT_FOUND,"Formulário não encontrado");
         audit.record(tenantId,userId,null,"FORM_METADATA_UPDATED","FORM",formId,Map.of("name",name.trim()));
@@ -88,12 +88,34 @@ public class ManagementService {
     @Transactional
     public void setFormArchived(UUID tenantId, UUID formId, UUID userId, boolean admin, boolean archived) {
         authorization.requireForm(tenantId,userId,admin,formId,"FORM_ARCHIVE");
-        int changed=jdbc.sql("UPDATE forms SET status=:status,updated_at=NOW() WHERE tenant_id=:tenantId AND id=:formId")
+        int changed=jdbc.sql("UPDATE forms SET status=:status,updated_at=NOW() WHERE tenant_id=:tenantId AND id=:formId AND deleted=FALSE")
                 .param("status",archived?"ARCHIVED":"DRAFT").param("tenantId",tenantId).param("formId",formId).update();
         if(changed==0) throw new ApiException(HttpStatus.NOT_FOUND,"Formulário não encontrado");
         audit.record(tenantId,userId,null,archived?"FORM_ARCHIVED":"FORM_RESTORED","FORM",formId,Map.of());
     }
 
+    @Transactional
+    public void softDeleteForm(UUID tenantId, UUID formId, UUID userId, boolean admin) {
+        Membership membership = authorization.requireForm(tenantId, userId, admin, formId, "FORM_ARCHIVE");
+        if (membership == null) {
+            membership = tenants.ensurePlatformMembership(tenantId, userId);
+        }
+        int changed = jdbc.sql("""
+                UPDATE forms SET deleted=TRUE,deleted_at=NOW(),deleted_by=:deletedBy,
+                       status='ARCHIVED',updated_at=NOW()
+                 WHERE tenant_id=:tenantId AND id=:formId AND deleted=FALSE
+                """).param("deletedBy", membership.id()).param("tenantId", tenantId).param("formId", formId).update();
+        if (changed == 0) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "Formulário não encontrado");
+        }
+        jdbc.sql("""
+                INSERT INTO sync_tombstones(tenant_id,entity_type,entity_id)
+                VALUES(:tenantId,'FORM',:formId)
+                ON CONFLICT(tenant_id,entity_type,entity_id) DO UPDATE SET deleted_at=NOW()
+                """).param("tenantId", tenantId).param("formId", formId).update();
+        audit.record(tenantId, userId, membership.id(), "FORM_DELETED", "FORM", formId,
+                Map.of("softDelete", true));
+    }
     @Transactional(readOnly = true)
     public SubmissionDetails submission(UUID tenantId, UUID id, UUID formId, UUID userId, boolean admin) {
         authorization.requireForm(tenantId,userId,admin,formId,"SUBMISSION_VIEW");

@@ -3,6 +3,7 @@ package com.inspecteam.form.api;
 import tools.jackson.databind.JsonNode;
 import com.inspecteam.form.application.FormService;
 import com.inspecteam.form.domain.FormSummary;
+import com.inspecteam.form.domain.PublishedFormDetails;
 import com.inspecteam.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -46,6 +47,17 @@ public class FormController {
         return service.list(tenantId, CurrentUser.id(authentication), CurrentUser.isPlatformAdmin(authentication));
     }
 
+    @GetMapping("/available")
+    List<FormSummary> available(@PathVariable UUID tenantId, Authentication authentication) {
+        return service.available(tenantId, CurrentUser.id(authentication), CurrentUser.isPlatformAdmin(authentication));
+    }
+
+    @GetMapping("/{formId}/published")
+    PublishedFormDetails published(@PathVariable UUID tenantId, @PathVariable UUID formId,
+            Authentication authentication) {
+        return service.published(tenantId, formId, CurrentUser.id(authentication),
+                CurrentUser.isPlatformAdmin(authentication));
+    }
     @PatchMapping("/{formId}/draft")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void updateDraft(@PathVariable UUID tenantId, @PathVariable UUID formId,

@@ -11,3 +11,18 @@ test("efeitos de carregamento não retornam Promise como cleanup",async()=>{for(
 test("Vite filtra somente sourcemaps inválidos do Griffel",async()=>{const config=await read("vite.config.ts");assert.match(config,/createLogger/);assert.match(config,/node_modules\/@griffel/);assert.match(config,/outside its package/);assert.doesNotMatch(config,/logLevel\s*:\s*["']silent/);});
 test("gateway preserva cookies em login, refresh e logout",async()=>{const session=await read("app/lib/server-session.ts");const proxy=await read("app/gateway/[...path]/route.ts");const logout=await read("app/gateway/auth/logout/route.ts");assert.match(session,/sessionCookies\(payload\.tokens\)/);assert.match(session,/sessionHeaders=refreshed\.cookies/);assert.match(session,/expiredSessionCookies\(\)/);assert.match(proxy,/return apiRequest\(/);assert.doesNotMatch(proxy,/new Headers\(\)/);assert.match(logout,/return clearSession\(\)/);});
 test("perfil possui página própria no menu do avatar",async()=>{const workspace=await read("app/components/Workspace.tsx");const profile=await read("app/components/ProfileSettings.tsx");const settings=workspace.slice(workspace.indexOf("function Settings"),workspace.indexOf("function AdminContent"));assert.match(workspace,/<details className="user-menu">/);assert.doesNotMatch(workspace,/className="sidebar-user"/);assert.match(workspace,/aria-label="Abrir menu do usuário"/);assert.match(workspace,/href="\/app\/perfil"/);assert.match(workspace,/<strong>Meu perfil<\/strong>/);assert.match(workspace,/loggingOut\?"Saindo\.\.\.":"Sair"/);assert.match(workspace,/isProfile\?<ProfilePage/);assert.doesNotMatch(settings,/ProfileSettings/);assert.match(profile,/api<Profile>\("me"/);assert.match(profile,/json\("PATCH"/);});
+
+test("formulários publicados podem ser preenchidos na web e excluídos logicamente",async()=>{
+ const workspace=await read("app/components/Workspace.tsx");
+ const runner=await read("app/components/FormRunner.tsx");
+ for(const endpoint of ["/available","/published","submissions","upload-sessions","/complete"])assert.match(workspace+runner,new RegExp(endpoint.replace("/","\\/")));
+ assert.match(workspace,/form\.id\}\/usar/);
+ for(const label of ["Usar formulário","Editar formulário","Arquivar","Excluir"])assert.match(workspace,new RegExp(label));
+ assert.match(workspace,/method:"DELETE"/);
+ assert.match(workspace,/exclusão lógica/);
+ for(const type of ["text","textarea","number","date","time","select","multiselect","checkbox","photo","signature","heading","instructions"])assert.match(runner,new RegExp('"' + type + '"'));
+ assert.match(runner,/aria-live="polite"/);
+ assert.match(runner,/<canvas/);
+ assert.match(runner,/Alternativa por teclado/);
+ assert.match(runner,/assinatura\.png/);
+});

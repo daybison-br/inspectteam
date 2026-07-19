@@ -26,8 +26,8 @@ public class SubmissionJdbcRepository {
                 INSERT INTO submissions
                     (id, tenant_id, form_id, form_version_id, submitted_by, answers, client_created_at)
                 SELECT :id, :tenantId, :formId, v.id, :membershipId, CAST(:answers AS JSONB), :clientCreatedAt
-                  FROM form_versions v
-                 WHERE v.tenant_id = :tenantId AND v.form_id = :formId
+                  FROM form_versions v JOIN forms f ON f.tenant_id=v.tenant_id AND f.id=v.form_id
+                 WHERE v.tenant_id = :tenantId AND v.form_id = :formId AND f.deleted=FALSE
                    AND v.id = :formVersionId AND v.status = 'PUBLISHED'
                 ON CONFLICT (id) DO NOTHING
                 """).param("id", id).param("tenantId", tenantId).param("formId", formId)

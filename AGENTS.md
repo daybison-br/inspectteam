@@ -28,6 +28,13 @@ Este arquivo contém lembretes obrigatórios para qualquer pessoa ou agente que 
 - `.env.example`: variáveis de ambiente de referência, sem segredos reais.
 - `compose.yaml`: infraestrutura local de desenvolvimento.
 
+## Regra permanente de exclusão e retenção
+
+- Toda exclusão de entidade de negócio deve ser lógica: marcar deleted = true e registrar deleted_at e deleted_by quando o esquema possuir autoria. Nunca remover fisicamente formulários, usuários, tenants, respostas ou outros registros que sustentem histórico, auditoria ou rastreabilidade.
+- Consultas operacionais, métricas, seletores e sincronização devem ignorar registros logicamente excluídos por padrão.
+- A exclusão deve gerar evento de auditoria e tombstone de sincronização quando o recurso for distribuído a clientes offline.
+- Exclusão física fica restrita à revogação de vínculos sem identidade própria, como associações de papéis e grants, e a dados técnicos descartáveis definidos por política de retenção.
+- Toda nova entidade de negócio deve considerar exclusão lógica já no desenho da migração, dos índices, das permissões, da API e dos testes.
 ## Diretrizes permanentes de interface e Design System
 
 Toda tela nova ou alterada deve usar o InspecTeam Design System e manter uma linguagem única. Material Design 3, Fluent 2 e Carbon são referências de técnica; não misturar bibliotecas ou copiar estilos divergentes na mesma interface.

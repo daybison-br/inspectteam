@@ -33,6 +33,8 @@ public class ManagementController {
     void archive(@PathVariable UUID tenantId,@PathVariable UUID formId,Authentication auth){service.setFormArchived(tenantId,formId,id(auth),admin(auth),true);}
     @PostMapping("/forms/{formId}/restore") @ResponseStatus(HttpStatus.NO_CONTENT)
     void restore(@PathVariable UUID tenantId,@PathVariable UUID formId,Authentication auth){service.setFormArchived(tenantId,formId,id(auth),admin(auth),false);}
+    @DeleteMapping("/forms/{formId}") @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteForm(@PathVariable UUID tenantId,@PathVariable UUID formId,Authentication auth){service.softDeleteForm(tenantId,formId,id(auth),admin(auth));}
 
     @GetMapping("/submissions/{submissionId}")
     ManagementService.SubmissionDetails submission(@PathVariable UUID tenantId,@PathVariable UUID submissionId,@RequestParam UUID formId,Authentication auth){return service.submission(tenantId,submissionId,formId,id(auth),admin(auth));}

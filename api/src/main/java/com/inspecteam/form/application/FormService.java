@@ -4,6 +4,7 @@ import com.inspecteam.audit.application.AuditService;
 import tools.jackson.databind.JsonNode;
 import com.inspecteam.form.domain.FormDefinitionValidator;
 import com.inspecteam.form.domain.FormSummary;
+import com.inspecteam.form.domain.PublishedFormDetails;
 import com.inspecteam.form.infrastructure.FormJdbcRepository;
 import com.inspecteam.permission.application.TenantAuthorizationService;
 import com.inspecteam.shared.exception.ApiException;
@@ -50,6 +51,20 @@ public class FormService {
         return forms.list(tenantId);
     }
 
+    @Transactional(readOnly = true)
+    public List<FormSummary> available(UUID tenantId, UUID userId, boolean platformAdmin) {
+        Membership membership = authorization.activate(tenantId, userId, platformAdmin);
+        UUID membershipId = membership == null ? new UUID(0, 0) : membership.id();
+        return forms.listAvailable(tenantId, membershipId,
+                platformAdmin || membership != null && membership.owner());
+    }
+
+    @Transactional(readOnly = true)
+    public PublishedFormDetails published(UUID tenantId, UUID formId, UUID userId, boolean platformAdmin) {
+        authorization.requireForm(tenantId, userId, platformAdmin, formId, "FORM_USE");
+        return forms.findPublished(tenantId, formId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Formulário publicado não encontrado"));
+    }
     @Transactional
     public void updateDraft(UUID tenantId, UUID formId, UUID userId,
             boolean platformAdmin, JsonNode definition) {

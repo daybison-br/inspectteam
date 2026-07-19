@@ -33,7 +33,7 @@ O arquivo `.gitignore` da raiz protege variáveis locais, chaves privadas, keyst
 - API HTTP com Spring MVC;
 - Spring Security com JWT HMAC;
 - Spring JDBC e PostgreSQL 18;
-- Flyway com onze migrações;
+- Flyway com doze migrações;
 - MinIO para armazenamento de fotos e assinaturas;
 - Testcontainers com PostgreSQL real nos testes;
 - empacotamento JAR.
@@ -99,7 +99,10 @@ O tenant ativo é definido localmente na transação com `set_config`. As tabela
 - validação da definição JSON;
 - publicação de versão imutável;
 - criação automática do próximo rascunho;
-- campos suportados: texto, texto longo, número, data, hora, seleção, multisseleção, checkbox, foto, assinatura, título e instruções.
+- campos suportados: texto, texto longo, número, data, hora, seleção, multisseleção, checkbox, foto, assinatura, título e instruções;
+- listagem operacional com ações minimalistas por ícone para utilizar, editar, arquivar, restaurar e excluir;
+- preenchimento de formulários publicados diretamente na web, incluindo validação obrigatória, fotos e assinatura desenhada ou registrada por teclado, com upload pré-assinado;
+- exclusão lógica de formulários com deleted = true, autoria/data, auditoria e tombstone, preservando versões e respostas.
 
 ### Respostas, arquivos e offline
 
@@ -127,7 +130,8 @@ As migrações em `api/src/main/resources/db/migration` são:
 8. eventos de auditoria;
 9. políticas de Row-Level Security;
 10. expansão da gestão web, senha temporária e membership administrativa;
-11. auditoria global da plataforma.
+11. auditoria global da plataforma;
+12. exclusão lógica de formulários, autoria da exclusão e índice parcial de itens ativos.
 
 O Hibernate está configurado apenas para validar o esquema. A evolução estrutural do banco deve ocorrer exclusivamente por novas migrações Flyway; migrações existentes não devem ser reescritas após serem compartilhadas.
 
@@ -193,11 +197,11 @@ O backend foi validado com `.\mvnw.cmd test`.
 - 4 testes executados;
 - 0 falhas e 0 erros;
 - PostgreSQL 18 iniciado por Testcontainers;
-- onze migrações Flyway aplicadas;
+- doze migrações Flyway aplicadas;
 - contexto Spring carregado;
-- fluxo integrado aprovado: cadastro do proprietário, criação e publicação de formulário, registro de dispositivo, pull de sincronização, criação e conclusão da resposta.
+- fluxo integrado aprovado: cadastro do proprietário, criação/publicação e consulta web do formulário, registro de dispositivo, pull de sincronização, criação/conclusão da resposta e exclusão lógica com preservação do histórico.
 
-O frontend foi validado com `npm test` e `npm run lint`: build concluído, 9 testes aprovados e nenhum erro de lint.
+O frontend foi validado com `npm test` e `npm run lint`: build concluído, 10 testes aprovados e nenhum erro de lint.
 
 A navegação entre rotas possui proteção contra efeitos assíncronos retornados como cleanup do React e uma barreira global em `web/app/error.tsx` para recuperação de falhas inesperadas sem deixar a interface em branco.
 

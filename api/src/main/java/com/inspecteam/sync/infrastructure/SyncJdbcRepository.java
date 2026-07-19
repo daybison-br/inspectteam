@@ -62,7 +62,7 @@ public class SyncJdbcRepository {
                 SELECT f.id form_id, f.name, v.id version_id, v.version_number,
                        v.definition::text definition, v.published_at
                   FROM forms f JOIN form_versions v ON v.tenant_id = f.tenant_id AND v.form_id = f.id
-                 WHERE f.tenant_id = :tenantId AND v.status = 'PUBLISHED'
+                 WHERE f.tenant_id = :tenantId AND f.deleted = FALSE AND v.status = 'PUBLISHED'
                    AND (:owner OR EXISTS (
                        SELECT 1 FROM membership_roles mr
                        JOIN role_permissions rp ON rp.tenant_id = mr.tenant_id AND rp.role_id = mr.role_id

@@ -26,7 +26,7 @@ SELECT
         var items=jdbc.sql("""
 SELECT t.id,t.name,t.slug,t.status,t.timezone,t.created_at,
             (SELECT COUNT(*) FROM tenant_memberships m WHERE m.tenant_id=t.id AND m.membership_type<>'PLATFORM_ADMIN') members,
-            (SELECT COUNT(*) FROM forms f WHERE f.tenant_id=t.id) forms FROM tenants t
+            (SELECT COUNT(*) FROM forms f WHERE f.tenant_id=t.id AND f.deleted=FALSE) forms FROM tenants t
             WHERE (LOWER(t.name) LIKE :q OR LOWER(t.slug) LIKE :q) AND (:s='' OR t.status=:s)
             ORDER BY t.created_at DESC LIMIT :limit OFFSET :offset""").param("q",q).param("s",s).param("limit",safe).param("offset",offset)
             .query((rs,row)->new TenantView(rs.getObject("id",UUID.class),rs.getString("name"),rs.getString("slug"),rs.getString("status"),
