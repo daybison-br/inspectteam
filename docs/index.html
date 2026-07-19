@@ -398,6 +398,7 @@ docker compose -f compose.production.yaml start minio</code></pre></div>
 <tr><td>Upload retorna 413</td><td>Limite Nginx</td><td>Mantenha <code>client_max_body_size 20m</code>.</td></tr>
 <tr><td>401 em rota protegida</td><td>Header e expiração</td><td>Envie Bearer token válido ou use refresh.</td></tr>
 <tr><td><code>destroy is not a function</code> ao navegar</td><td>Efeito React retornando uma <code>Promise</code> como cleanup</td><td>Não usar <code>useEffect(load, deps)</code>; envolver com <code>useEffect(() =&gt; { void load(); }, deps)</code>. A regressão é coberta pelos testes do frontend.</td></tr>
+<tr><td>Warnings de sourcemap do <code>@griffel</code></td><td>O pacote publicado referencia caminhos internos do monorepositório Fluent</td><td>O <code>vite.config.ts</code> filtra somente o aviso conhecido de <code>node_modules/@griffel</code>; demais warnings continuam visíveis.</td></tr>
 <tr><td>403 entre tenants</td><td>Membership e grants</td><td>É esperado sem vínculo/permissão; não desative RLS.</td></tr>
 <tr><td>Certificado não emite</td><td>DNS A e portas 80/443</td><td>Aguarde propagação e valide o firewall Hostinger/UFW.</td></tr>
 <tr><td>Disco cheio</td><td><code>df -h</code> e <code>docker system df</code></td><td>Revise logs, releases, imagens e política de retenção.</td></tr></tbody></table></div>

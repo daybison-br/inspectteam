@@ -1,5 +1,5 @@
 import vinext from "vinext";
-import { defineConfig } from "vite";
+import { createLogger, defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
@@ -10,6 +10,25 @@ const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
+
+const viteLogger = createLogger();
+const defaultWarn = viteLogger.warn.bind(viteLogger);
+const defaultWarnOnce = viteLogger.warnOnce.bind(viteLogger);
+const isBrokenGriffelSourcemapWarning = (message: string) => {
+  const normalizedMessage = message.replaceAll("\\", "/");
+  return (
+    normalizedMessage.includes("Sourcemap for") &&
+    normalizedMessage.includes("/node_modules/@griffel/") &&
+    normalizedMessage.includes("outside its package")
+  );
+};
+
+viteLogger.warn = (message, options) => {
+  if (!isBrokenGriffelSourcemapWarning(message)) defaultWarn(message, options);
+};
+viteLogger.warnOnce = (message, options) => {
+  if (!isBrokenGriffelSourcemapWarning(message)) defaultWarnOnce(message, options);
+};
 
 const localBindingConfig = {
   main: "./worker/index.ts",
@@ -44,6 +63,7 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    customLogger: viteLogger,
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
